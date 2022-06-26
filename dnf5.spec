@@ -28,6 +28,7 @@ BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
 BuildRequires: cmake(bash-completion)
+BuildRequires: createrepo_c
 # For -lstdc++fs, but is that really needed?
 BuildRequires: stdc++-static-devel
 # Language bindings

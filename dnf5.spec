@@ -118,7 +118,7 @@ Ruby language bindings to the DNF package manager
 %{_datadir}/polkit-1/actions/org.rpm.dnf.v0.policy
 %{_prefix}/lib/systemd/system/dnf5daemon-server.service
 %{_libdir}/dnf5
-%{_libdir}/libdnf-plugins
+%dir %{_libdir}/libdnf-plugins
 %doc %{_mandir}/man8/dnf5.8*
 %doc %{_mandir}/man8/dnf5daemon-client.8*
 %doc %{_mandir}/man8/dnf5daemon-dbus-api.8*
@@ -142,6 +142,7 @@ Ruby language bindings to the DNF package manager
 %{_prefix}/lib/python*/site-packages/libdnf_plugins
 %{_libdir}/python*/site-packages/libdnf
 %{_libdir}/python*/site-packages/libdnf_cli
+%{_libdir}/libdnf-plugins/python_plugins_loader.so
 
 %files -n perl-%{name}
 %{_libdir}/perl5/vendor_perl/auto/libdnf

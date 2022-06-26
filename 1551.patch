@@ -1,0 +1,23 @@
+From 2778b5b5baf8d854caae4e4cf01cff987b3e088c Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@lindev.ch>
+Date: Fri, 24 Jun 2022 21:04:18 +0200
+Subject: [PATCH] Add missing #include <ctime>
+
+Add missing include (for gmtime() and strftime(), both used by format_epoch)
+Not having this breaks the build with clang 14.0.5, libstdc++ 12.1.1
+---
+ common/utils/string.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/common/utils/string.hpp b/common/utils/string.hpp
+index 289ff396c..59a8cd770 100644
+--- a/common/utils/string.hpp
++++ b/common/utils/string.hpp
+@@ -23,6 +23,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
+ #include <algorithm>
+ #include <string>
+ #include <vector>
++#include <ctime>
+ 
+ 
+ namespace libdnf::utils::string {

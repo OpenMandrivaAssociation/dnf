@@ -26,6 +26,8 @@ BuildRequires: pkgconfig(librepo)
 BuildRequires: pkgconfig(sqlite3)
 BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
+BuildRequires: pkgconfig(cppunit)
+BuildRequires: cmake(bash-completion)
 # Language bindings
 BuildRequires: perl-devel
 BuildRequires: pkgconfig(python3)

@@ -1,12 +1,11 @@
-%define snapshot 20220624
+%define snapshot 20220816
 
 Name: dnf5
 Version: 0.67.1
 Release: %{?snapshot:0.%{snapshot}.}1
-Source0: https://github.com/rpm-software-management/libdnf/archive/refs/heads/dnf-5-devel.tar.gz#/dnf5-%{snapshot}.tar.gz
-Patch0: https://github.com/rpm-software-management/libdnf/pull/1551.patch
+Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main.tar.gz#/dnf5-%{snapshot}.tar.gz
 Summary: Upcoming version of the DNF package manager
-URL: https://github.com/rpm-software-management/libdnf/tree/dnf-5-devel
+URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
 BuildRequires: cmake ninja
@@ -92,7 +91,7 @@ Group: Development/Ruby
 Ruby language bindings to the DNF package manager
 
 %prep
-%autosetup -p1 -n libdnf-dnf-5-devel
+%autosetup -p1 -n dnf5-main
 %cmake \
 	-G Ninja \
 	-DWITH_MAN:BOOL=true \
@@ -106,6 +105,8 @@ Ruby language bindings to the DNF package manager
 
 %install
 %ninja_install -C build
+# We don't need the README -- we know it's a plugin drop dir
+rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 
 %files
 %{_sysconfdir}/dbus-1/system.d/org.rpm.dnf.v0.conf
@@ -121,7 +122,9 @@ Ruby language bindings to the DNF package manager
 %{_datadir}/polkit-1/actions/org.rpm.dnf.v0.policy
 %{_prefix}/lib/systemd/system/dnf5daemon-server.service
 %{_libdir}/dnf5
-%dir %{_libdir}/libdnf-plugins
+%dir %{_libdir}/libdnf5
+%dir %{_libdir}/libdnf5/plugins
+%{_libdir}/libdnf5/plugins/actions.so
 %doc %{_mandir}/man8/dnf5.8*
 %doc %{_mandir}/man8/dnf5daemon-client.8*
 %doc %{_mandir}/man8/dnf5daemon-dbus-api.8*
@@ -142,16 +145,16 @@ Ruby language bindings to the DNF package manager
 %{_libdir}/pkgconfig/libdnf-cli.pc
 
 %files -n python-%{name}
-%{_prefix}/lib/python*/site-packages/libdnf_plugins
-%{_libdir}/python*/site-packages/libdnf
-%{_libdir}/python*/site-packages/libdnf_cli
-%{_libdir}/libdnf-plugins/python_plugins_loader.so
+%{_libdir}/libdnf5/plugins/python_plugins_loader.so
+%dir %{_prefix}/lib/python*/site-packages/libdnf_plugins
+%{_libdir}/python*/site-packages/libdnf5
+%{_libdir}/python*/site-packages/libdnf5_cli
 
 %files -n perl-%{name}
-%{_libdir}/perl5/vendor_perl/auto/libdnf
-%{_libdir}/perl5/vendor_perl/auto/libdnf_cli
-%{_libdir}/perl5/vendor_perl/libdnf
-%{_libdir}/perl5/vendor_perl/libdnf_cli
+%{_libdir}/perl5/vendor_perl/auto/libdnf5
+%{_libdir}/perl5/vendor_perl/auto/libdnf5_cli
+%{_libdir}/perl5/vendor_perl/libdnf5
+%{_libdir}/perl5/vendor_perl/libdnf5_cli
 
 %files -n ruby-%{name}
 %{_libdir}/ruby/vendor_ruby/*/*

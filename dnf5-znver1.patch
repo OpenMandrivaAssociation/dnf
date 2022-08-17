@@ -1,0 +1,21 @@
+diff -up dnf5-main/libdnf/conf/vars.cpp.omv~ dnf5-main/libdnf/conf/vars.cpp
+--- dnf5-main/libdnf/conf/vars.cpp.omv~	2022-08-17 14:44:45.104515730 +0200
++++ dnf5-main/libdnf/conf/vars.cpp	2022-08-17 14:45:30.729825789 +0200
+@@ -71,7 +71,7 @@ static const struct {
+       nullptr}},
+     {"arm", {"armv5tejl", "armv5tel", "armv5tl", "armv6l", "armv7l", "armv8l", nullptr}},
+     {"armhfp", {"armv6hl", "armv7hl", "armv7hnl", "armv8hl", "armv8hnl", "armv8hcnl", nullptr}},
+-    {"i386", {"i386", "athlon", "geode", "i386", "i486", "i586", "i686", nullptr}},
++    {"i386", {"i386", "athlon", "geode", "i386", "i486", "i586", "i686", "znver1_32", nullptr}},
+     {"ia64", {"ia64", nullptr}},
+     {"mips", {"mips", nullptr}},
+     {"mipsel", {"mipsel", nullptr}},
+@@ -89,7 +89,7 @@ static const struct {
+     {"sh3", {"sh3", nullptr}},
+     {"sh4", {"sh4", "sh4a", nullptr}},
+     {"sparc", {"sparc", "sparc64", "sparc64v", "sparcv8", "sparcv9", "sparcv9v", nullptr}},
+-    {"x86_64", {"x86_64", "amd64", "ia32e", nullptr}},
++    {"x86_64", {"x86_64", "amd64", "ia32e", "znver1", nullptr}},
+     {nullptr, {nullptr}}};
+ 
+ static const char * get_base_arch(const char * arch) {

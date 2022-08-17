@@ -1,9 +1,10 @@
-%define snapshot 20220816
+%define snapshot 20220817
 
 Name: dnf5
 Version: 0.67.1
 Release: %{?snapshot:0.%{snapshot}.}1
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main.tar.gz#/dnf5-%{snapshot}.tar.gz
+Patch0: dnf5-znver1.patch
 Summary: Upcoming version of the DNF package manager
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL

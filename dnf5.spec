@@ -147,6 +147,12 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %systemd_postun_with_restart dnf5daemon-server.service
 
 %files
+%dir %{_sysconfdir}/dnf
+%dir %{_sysconfdir}/dnf/dnf5-aliases.d
+%doc %{_sysconfdir}/dnf/dnf5-aliases.d/README
+%dir %{_prefix}/lib/dnf5
+%dir %{_prefix}/lib/dnf5/aliases.d
+%config %{_prefix}/lib/dnf5/aliases.d/compatibility.conf
 %{_bindir}/dnf5
 %{_datadir}/bash-completion/completions/dnf5
 %{_libdir}/dnf5

@@ -1,0 +1,64 @@
+diff -Naur dnf5-5.0.0/bindings/CMakeLists.txt dnf5-5.0.0.tpg/bindings/CMakeLists.txt
+--- dnf5-5.0.0/bindings/CMakeLists.txt	2022-10-11 14:16:16.000000000 +0000
++++ dnf5-5.0.0.tpg/bindings/CMakeLists.txt	2022-10-27 18:36:30.114443663 +0000
+@@ -38,6 +38,7 @@
+ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+     set(SWIG_COMPILE_OPTIONS ${SWIG_COMPILE_OPTIONS}
+         -Wno-deprecated-volatile
++        -Wno-unknown-pragmas -Wno-unknown-warning-option
+     )
+ else()
+     set(SWIG_COMPILE_OPTIONS ${SWIG_COMPILE_OPTIONS}
+diff -Naur dnf5-5.0.0/bindings/go/CMakeLists.txt dnf5-5.0.0.tpg/bindings/go/CMakeLists.txt
+--- dnf5-5.0.0/bindings/go/CMakeLists.txt	2022-10-11 14:16:16.000000000 +0000
++++ dnf5-5.0.0.tpg/bindings/go/CMakeLists.txt	2022-10-27 18:27:25.466676376 +0000
+@@ -9,7 +9,9 @@
+ function(add_go_module LIBRARY_NAME MODULE_NAME)
+     set(TARGET_NAME "go_${MODULE_NAME}")
+     set_source_files_properties(../../${LIBRARY_NAME}/${MODULE_NAME}.i PROPERTIES CPLUSPLUS ON)
+-    set(CMAKE_SWIG_FLAGS -module ${TARGET_NAME} -cgo -intgosize 64 -package libdnf)
++    set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS}
++        -module ${TARGET_NAME} -cgo -intgosize 64 -package libdnf
++    )
+     swig_add_library(${TARGET_NAME} LANGUAGE go SOURCES ../../${LIBRARY_NAME}/${MODULE_NAME}.i)
+     set_property(TARGET ${TARGET_NAME} PROPERTY OUTPUT_NAME ${MODULE_NAME})
+     target_compile_options(${TARGET_NAME} PUBLIC ${SWIG_COMPILE_OPTIONS})
+diff -Naur dnf5-5.0.0/bindings/libdnf5/common.i dnf5-5.0.0.tpg/bindings/libdnf5/common.i
+--- dnf5-5.0.0/bindings/libdnf5/common.i	2022-10-11 14:16:16.000000000 +0000
++++ dnf5-5.0.0.tpg/bindings/libdnf5/common.i	2022-10-27 18:27:25.466676376 +0000
+@@ -6,8 +6,6 @@
+ %module "libdnf5/common"
+ #endif
+ 
+-#define SWIGWORDSIZE64
+-
+ %include <exception.i>
+ %include <stdint.i>
+ %include <std_map.i>
+diff -Naur dnf5-5.0.0/bindings/python3/CMakeLists.txt dnf5-5.0.0.tpg/bindings/python3/CMakeLists.txt
+--- dnf5-5.0.0/bindings/python3/CMakeLists.txt	2022-10-11 14:16:16.000000000 +0000
++++ dnf5-5.0.0.tpg/bindings/python3/CMakeLists.txt	2022-10-27 18:27:25.466676376 +0000
+@@ -12,6 +12,9 @@
+ 
+ function(add_python3_module LIBRARY_NAME MODULE_NAME)
+     set(TARGET_NAME "python3_${MODULE_NAME}")
++    set(SWIG_COMPILE_OPTIONS ${SWIG_COMPILE_OPTIONS}
++       -Wno-redundant-decls
++    )
+     set_source_files_properties(../../${LIBRARY_NAME}/${MODULE_NAME}.i PROPERTIES CPLUSPLUS ON)
+     set_source_files_properties(../../${LIBRARY_NAME}/${MODULE_NAME}.i PROPERTIES SWIG_FLAGS "-relativeimport")
+     swig_add_library(${TARGET_NAME} LANGUAGE python SOURCES ../../${LIBRARY_NAME}/${MODULE_NAME}.i)
+diff -Naur dnf5-5.0.0/bindings/ruby/CMakeLists.txt dnf5-5.0.0.tpg/bindings/ruby/CMakeLists.txt
+--- dnf5-5.0.0/bindings/ruby/CMakeLists.txt	2022-10-11 14:16:16.000000000 +0000
++++ dnf5-5.0.0.tpg/bindings/ruby/CMakeLists.txt	2022-10-27 18:27:25.466676376 +0000
+@@ -14,7 +14,9 @@
+     set(TARGET_NAME "ruby_${MODULE_NAME}")
+     set_source_files_properties(../../${LIBRARY_NAME}/${MODULE_NAME}.i PROPERTIES CPLUSPLUS ON)
+     set_property(SOURCE ../../${LIBRARY_NAME}/${MODULE_NAME}.i PROPERTY SWIG_MODULE_NAME ${MODULE_NAME})
+-    set(CMAKE_SWIG_FLAGS -module ${MODULE_NAME} -ruby)
++    set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS}
++        -module ${MODULE_NAME} -ruby
++    )
+     swig_add_library(${TARGET_NAME} LANGUAGE ruby SOURCES ../../${LIBRARY_NAME}/${MODULE_NAME}.i)
+     set_property(TARGET ${TARGET_NAME} PROPERTY OUTPUT_NAME ${MODULE_NAME})
+     target_compile_options(${TARGET_NAME} PUBLIC ${SWIG_COMPILE_OPTIONS})

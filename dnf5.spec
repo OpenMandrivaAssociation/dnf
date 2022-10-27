@@ -7,7 +7,7 @@
 Summary: Command-line package manager
 Name: dnf5
 Version: 5.0.0
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -166,7 +166,7 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %{_var}/cache/libdnf/
 
 %files -n %{clilibname}
-%{_libdir}/libdnf-cli.so.0*
+%{_libdir}/libdnf-cli.so.%{major}*
 
 %files -n dnf5daemon-client
 %{_bindir}/dnf5daemon-client
@@ -175,7 +175,7 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %files -n dnf5daemon-server
 %{_bindir}/dnf5daemon-server
 %{_unitdir}/dnf5daemon-server.service
-%{_sysconfdir}/dbus-1/system.d/org.rpm.dnf.v0.conf
+%config(noreplace) %{_sysconfdir}/dbus-1/system.d/org.rpm.dnf.v0.conf
 %{_datadir}/dbus-1/system-services/org.rpm.dnf.v0.service
 %{_datadir}/dbus-1/interfaces/org.rpm.dnf.v0.*.xml
 %{_datadir}/polkit-1/actions/org.rpm.dnf.v0.policy

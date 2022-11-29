@@ -151,16 +151,33 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %dir %{_sysconfdir}/dnf
 %dir %{_sysconfdir}/dnf/dnf5-aliases.d
 %doc %{_sysconfdir}/dnf/dnf5-aliases.d/README
-%dir %{_prefix}/lib/dnf5
-%dir %{_prefix}/lib/dnf5/aliases.d
-%config %{_prefix}/lib/dnf5/aliases.d/compatibility.conf
+%dir %{_datadir}/dnf5
+%dir %{_datadir}/dnf5/aliases.d
+%config %{_datadir}/dnf5/aliases.d/compatibility.conf
 %{_bindir}/dnf5
 %{_datadir}/bash-completion/completions/dnf5
 %{_libdir}/dnf5
 %dir %{_libdir}/libdnf5
 %dir %{_libdir}/libdnf5/plugins
 %{_libdir}/libdnf5/plugins/actions.so
+%doc %{_mandir}/man7/dnf5*.7*
 %doc %{_mandir}/man8/dnf5.8*
+%doc %{_mandir}/man8/dnf5-advisory.8*
+%doc %{_mandir}/man8/dnf5-clean.8*
+%doc %{_mandir}/man8/dnf5-distro-sync.8*
+%doc %{_mandir}/man8/dnf5-downgrade.8*
+%doc %{_mandir}/man8/dnf5-download.8*
+%doc %{_mandir}/man8/dnf5-environment.8*
+%doc %{_mandir}/man8/dnf5-group.8*
+%doc %{_mandir}/man8/dnf5-install.8*
+%doc %{_mandir}/man8/dnf5-makecache.8*
+%doc %{_mandir}/man8/dnf5-mark.8*
+%doc %{_mandir}/man8/dnf5-reinstall.8*
+%doc %{_mandir}/man8/dnf5-remove.8*
+%doc %{_mandir}/man8/dnf5-repo.8*
+%doc %{_mandir}/man8/dnf5-repoquery.8*
+%doc %{_mandir}/man8/dnf5-swap.8*
+%doc %{_mandir}/man8/dnf5-upgrade.8*
 
 %files -n %{libname}
 %{_libdir}/libdnf5.so.%{major}*

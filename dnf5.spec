@@ -2,11 +2,11 @@
 %define major 1
 %define libname %mklibname dnf %{major}
 %define clilibname %mklibname dnf-cli
-%define devname %mklibname -d dnf
+%define devname %mklibname -d dnf5
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.1
+Version: 5.0.2
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -203,6 +203,8 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %files -n %{devname}
 %{_includedir}/libdnf-cli
 %{_includedir}/libdnf
+%dir %{_includedir}/dnf5
+%{_includedir}/dnf5/*.hpp
 %{_libdir}/libdnf-cli.so
 %{_libdir}/libdnf5.so
 %{_libdir}/pkgconfig/libdnf.pc

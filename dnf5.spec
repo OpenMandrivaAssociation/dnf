@@ -52,6 +52,7 @@ BuildRequires: python-sphinx
 BuildRequires: python3dist(breathe)
 Requires: dnf-data
 Recommends: bash-completion
+%rename microdnf
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,

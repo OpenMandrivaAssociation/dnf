@@ -6,7 +6,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.6
+Version: 5.0.7
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -177,6 +177,7 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %doc %{_mandir}/man8/dnf5-remove.8*
 %doc %{_mandir}/man8/dnf5-repo.8*
 %doc %{_mandir}/man8/dnf5-repoquery.8*
+%doc %{_mandir}/man8//dnf5-search.8*
 %doc %{_mandir}/man8/dnf5-swap.8*
 %doc %{_mandir}/man8/dnf5-upgrade.8*
 

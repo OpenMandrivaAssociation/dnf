@@ -6,7 +6,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.7
+Version: 5.0.8
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -34,7 +34,7 @@ BuildRequires: pkgconfig(zck)
 BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(gpgme)
 BuildRequires: pkgconfig(librepo)
-BuildRequires: pkgconfig(sqlite3)
+BuildRequires: pkgconfig(sqlite3) >= 3.35.0
 BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
@@ -213,10 +213,12 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %{_libdir}/pkgconfig/libdnf-cli.pc
 
 %files -n python-%{name}
-%{_libdir}/libdnf5/plugins/python_plugins_loader.so
-%dir %{_prefix}/lib/python*/site-packages/libdnf_plugins
-%{_libdir}/python*/site-packages/libdnf5
-%{_libdir}/python*/site-packages/libdnf5_cli
+%dir %{python_sitelib}/libdnf_plugins/
+%{_libdir}/libdnf5/plugins/python_plugins_loader.*
+%{python_sitearch}/libdnf5
+%{python_sitearch}/libdnf5-*.dist-info
+%{python_sitearch}/libdnf5_cli
+%{python_sitearch}/libdnf5_cli-*.dist-info
 
 %files -n perl-%{name}
 %{_libdir}/perl5/vendor_perl/auto/libdnf5

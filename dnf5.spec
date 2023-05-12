@@ -6,7 +6,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.9
+Version: 5.0.10
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -14,10 +14,9 @@ Group: System/Configuration/Packaging
 %if 0%{?snapshot:1}
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main.tar.gz#/%{name}-%{snapshot}.tar.gz
 %else
-Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{name}-%{version}.tar.gz
+Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 %endif
 Patch0: dnf5-znver1.patch
-Patch1: https://github.com/rpm-software-management/dnf5/pull/111.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: cmake(toml11)
@@ -164,6 +163,7 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %doc %{_mandir}/man7/dnf5*.7*
 %doc %{_mandir}/man8/dnf5.8*
 %doc %{_mandir}/man8/dnf5-advisory.8*
+%doc %{_mandir}/man8/dnf5-autoremove.8*
 %doc %{_mandir}/man8/dnf5-clean.8*
 %doc %{_mandir}/man8/dnf5-distro-sync.8*
 %doc %{_mandir}/man8/dnf5-downgrade.8*

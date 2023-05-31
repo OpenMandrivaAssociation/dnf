@@ -4,9 +4,12 @@
 %define clilibname %mklibname dnf-cli
 %define devname %mklibname -d dnf5
 
+# (tpg) dnf5 is not yet ready to replace dnf
+%bcond_with dnf5_default
+
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.11
+Version: 5.0.13
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -49,28 +52,40 @@ BuildRequires: swig
 # For building man pages
 BuildRequires: python-sphinx
 BuildRequires: python3dist(breathe)
+%if %{without dnf5_default}
 Requires: dnf-data
+%endif
 Recommends: bash-completion
 %rename microdnf
+
+%if %{with dnf5_default}
+Provides: dnf = %{EVRD}
+Obsoletes: dnf < 5
+Provides: yum = %{EVRD}
+Obsoletes: yum < 5
+%endif
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
 upgrading, configuring, and removing computer programs in a consistent manner.
-It supports RPM packages, modulemd modules, and comps groups & environments.
+It supports RPM packages, modulemd modules, and comps groups & environments
 
 %package -n %{libname}
-Summary: DNF 5 library
+Summary: Package management library
 Group: System/Libraries
+%if %{with dnf5_default}
+Conflicts: dnf-data < 4.16.0
+%endif
 
 %description -n %{libname}
-DNF 5 library.
+Package management library.
 
 %package -n %{clilibname}
-Summary: DNF 5 CLI library
+Summary: Library for working with a terminal in a command-line package manager
 Group: System/Libraries
 
 %description -n %{clilibname}
-DNF 5 CLI library.
+Library for working with a terminal in a command-line package manager.
 
 %package -n dnf5daemon-client
 Summary: Command-line interface for dnf5daemon-server
@@ -85,7 +100,11 @@ Summary: Package management service with a DBus interface
 Requires: %{libname} >= %{EVRD}
 Requires: %{clilibname} >= %{EVRD}
 Conflicts: dnf5 < 5.0.0
+Requires: dbus
+Requires: polkit
+%if %{without dnf5_default}
 Requires: dnf-data
+%endif
 
 %description -n dnf5daemon-server
 Package management service with a DBus interface.
@@ -138,6 +157,13 @@ Ruby language bindings to the DNF package manager.
 # We don't need the README -- we know it's a plugin drop dir
 rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 
+%if %{with dnf5_default}
+ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/dnf
+ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/yum
+%endif
+
+ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
+
 %post -n dnf5daemon-server
 %systemd_post dnf5daemon-server.service
 
@@ -155,6 +181,11 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %dir %{_datadir}/dnf5/aliases.d
 %config %{_datadir}/dnf5/aliases.d/compatibility.conf
 %{_bindir}/dnf5
+%{_bindir}/microdnf
+%if %{with dnf5_default}
+%{_bindir}/dnf
+%{_bindir}/yum
+%endif
 %{_datadir}/bash-completion/completions/dnf5
 %{_libdir}/dnf5
 %dir %{_libdir}/libdnf5
@@ -164,7 +195,9 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %doc %{_mandir}/man8/dnf5.8*
 %doc %{_mandir}/man8/dnf5-advisory.8*
 %doc %{_mandir}/man8/dnf5-autoremove.8*
+%doc %{_mandir}/man8/dnf5-builddep.8.*
 %doc %{_mandir}/man8/dnf5-clean.8*
+%doc %{_mandir}/man8/dnf5-copr.8.*
 %doc %{_mandir}/man8/dnf5-distro-sync.8*
 %doc %{_mandir}/man8/dnf5-downgrade.8*
 %doc %{_mandir}/man8/dnf5-download.8*
@@ -184,6 +217,14 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %doc %{_mandir}/man8/dnf5-upgrade.8*
 
 %files -n %{libname}
+%if %{with dnf5_default}
+%config(noreplace) %{_sysconfdir}/dnf/dnf.conf
+%dir %{_sysconfdir}/dnf/vars
+%dir %{_sysconfdir}/dnf/protected.d
+%else
+%exclude %{_sysconfdir}/dnf/dnf.conf
+%endif
+%dir %{_libdir}/libdnf5
 %{_libdir}/libdnf5.so.%{major}*
 %{_var}/cache/libdnf/
 

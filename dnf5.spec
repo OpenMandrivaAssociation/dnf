@@ -9,7 +9,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.13
+Version: 5.0.14
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -252,7 +252,7 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 %{_includedir}/dnf5/*.hpp
 %{_libdir}/libdnf-cli.so
 %{_libdir}/libdnf5.so
-%{_libdir}/pkgconfig/libdnf.pc
+%{_libdir}/pkgconfig/libdnf5.pc
 %{_libdir}/pkgconfig/libdnf-cli.pc
 
 %files -n python-%{name}

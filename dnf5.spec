@@ -1,7 +1,7 @@
 #define snapshot 20220923
 %define major 1
-%define libname %mklibname dnf %{major}
-%define clilibname %mklibname dnf-cli
+%define libname %mklibname dnf5_ %{major}
+%define clilibname %mklibname dnf5-cli %{major}
 %define devname %mklibname -d dnf5
 
 # (tpg) dnf5 is not yet ready to replace dnf
@@ -9,7 +9,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.14
+Version: 5.0.15
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -76,6 +76,7 @@ Group: System/Libraries
 %if %{with dnf5_default}
 Conflicts: dnf-data < 4.16.0
 %endif
+%rename %{_lib}dnf1
 
 %description -n %{libname}
 Package management library.
@@ -83,6 +84,8 @@ Package management library.
 %package -n %{clilibname}
 Summary: Library for working with a terminal in a command-line package manager
 Group: System/Libraries
+%rename %{_lib}dnf-cli
+%rename %{_lib}dnf-cli1
 
 %description -n %{clilibname}
 Library for working with a terminal in a command-line package manager.
@@ -226,10 +229,10 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 %endif
 %dir %{_libdir}/libdnf5
 %{_libdir}/libdnf5.so.%{major}*
-%{_var}/cache/libdnf/
+%{_var}/cache/libdnf5/
 
 %files -n %{clilibname}
-%{_libdir}/libdnf-cli.so.%{major}*
+%{_libdir}/libdnf5-cli.so.%{major}*
 
 %files -n dnf5daemon-client
 %{_bindir}/dnf5daemon-client
@@ -246,14 +249,14 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 %doc %{_mandir}/man8/dnf5daemon-dbus-api.8.*
 
 %files -n %{devname}
-%{_includedir}/libdnf-cli
-%{_includedir}/libdnf
+%{_includedir}/libdnf5-cli
+%{_includedir}/libdnf5
 %dir %{_includedir}/dnf5
 %{_includedir}/dnf5/*.hpp
-%{_libdir}/libdnf-cli.so
+%{_libdir}/libdnf5-cli.so
 %{_libdir}/libdnf5.so
 %{_libdir}/pkgconfig/libdnf5.pc
-%{_libdir}/pkgconfig/libdnf-cli.pc
+%{_libdir}/pkgconfig/libdnf5-cli.pc
 
 %files -n python-%{name}
 %dir %{python_sitelib}/libdnf_plugins/

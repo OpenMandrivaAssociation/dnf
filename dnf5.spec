@@ -9,7 +9,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.0.15
+Version: 5.1.1
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -64,6 +64,35 @@ Obsoletes: dnf < 5
 Provides: yum = %{EVRD}
 Obsoletes: yum < 5
 %endif
+
+Provides: dnf5-command(install)
+Provides: dnf5-command(upgrade)
+Provides: dnf5-command(remove)
+Provides: dnf5-command(distro-sync)
+Provides: dnf5-command(downgrade)
+Provides: dnf5-command(reinstall)
+Provides: dnf5-command(swap)
+Provides: dnf5-command(mark)
+Provides: dnf5-command(autoremove)
+Provides: dnf5-command(check-upgrade)
+Provides: dnf5-command(leaves)
+Provides: dnf5-command(repoquery)
+Provides: dnf5-command(search)
+Provides: dnf5-command(list)
+Provides: dnf5-command(info)
+Provides: dnf5-command(group)
+Provides: dnf5-command(environment)
+Provides: dnf5-command(module)
+Provides: dnf5-command(history)
+Provides: dnf5-command(repo)
+Provides: dnf5-command(advisory)
+Provides: dnf5-command(clean)
+Provides: dnf5-command(download)
+Provides: dnf5-command(makecache)
+Provides: dnf5-command(builddep)
+Provides: dnf5-command(changelog)
+Provides: dnf5-command(copr)
+Provides: dnf5-command(repoclosure)
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
@@ -194,6 +223,9 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 %dir %{_libdir}/libdnf5
 %dir %{_libdir}/libdnf5/plugins
 %{_libdir}/libdnf5/plugins/actions.so
+%config %{_sysconfdir}/dnf/libdnf5-plugins/actions.conf
+%dir %{_sysconfdir}/dnf/libdnf5-plugins/actions.d
+%doc %{_mandir}/man8/libdnf5-actions.8.*
 %doc %{_mandir}/man7/dnf5*.7*
 %doc %{_mandir}/man8/dnf5.8*
 %doc %{_mandir}/man8/dnf5-advisory.8*
@@ -215,7 +247,7 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 %doc %{_mandir}/man8/dnf5-repo.8*
 %doc %{_mandir}/man8/dnf5-repoclosure.8.*
 %doc %{_mandir}/man8/dnf5-repoquery.8*
-%doc %{_mandir}/man8//dnf5-search.8*
+%doc %{_mandir}/man8/dnf5-search.8*
 %doc %{_mandir}/man8/dnf5-swap.8*
 %doc %{_mandir}/man8/dnf5-upgrade.8*
 
@@ -227,6 +259,7 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 %else
 %exclude %{_sysconfdir}/dnf/dnf.conf
 %endif
+%dir %{_sysconfdir}/dnf/libdnf5-plugins
 %dir %{_libdir}/libdnf5
 %{_libdir}/libdnf5.so.%{major}*
 %{_var}/cache/libdnf5/

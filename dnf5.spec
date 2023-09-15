@@ -9,8 +9,8 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.2
-Release: %{?snapshot:0.%{snapshot}.}2
+Version: 5.1.3
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -221,6 +221,10 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 %endif
 %{_datadir}/bash-completion/completions/dnf5
 %{_libdir}/dnf5
+%dir %{_datadir}/dnf5/libdnf.conf.d
+%dir %{_sysconfdir}/dnf/libdnf5.conf.d
+%dir %{_datadir}/dnf5/repos.override.d
+%dir %{_sysconfdir}/dnf/repos.override.d
 %dir %{_libdir}/libdnf5
 %dir %{_libdir}/libdnf5/plugins
 %{_libdir}/libdnf5/plugins/actions.so

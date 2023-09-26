@@ -9,7 +9,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.3
+Version: 5.1.4
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL

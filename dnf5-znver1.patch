@@ -1,16 +1,16 @@
-diff -Naur dnf5-5.1.1/libdnf5/conf/vars.cpp dnf5-5.1.1.tpg/libdnf5/conf/vars.cpp
---- dnf5-5.1.1/libdnf5/conf/vars.cpp	2023-08-04 11:38:50.000000000 +0000
-+++ dnf5-5.1.1.tpg/libdnf5/conf/vars.cpp	2023-08-07 13:33:18.895942727 +0000
-@@ -72,7 +72,7 @@
+diff -Naur dnf5-5.1.4/libdnf5/rpm/arch_private.hpp dnf5-5.1.4.tpg/libdnf5/rpm/arch_private.hpp
+--- dnf5-5.1.4/libdnf5/rpm/arch_private.hpp	2023-09-18 09:50:16.000000000 +0000
++++ dnf5-5.1.4.tpg/libdnf5/rpm/arch_private.hpp	2023-09-28 11:36:02.778756839 +0000
+@@ -45,7 +45,7 @@
        nullptr}},
      {"arm", {"armv5tejl", "armv5tel", "armv5tl", "armv6l", "armv7l", "armv8l", nullptr}},
      {"armhfp", {"armv6hl", "armv7hl", "armv7hnl", "armv8hl", "armv8hnl", "armv8hcnl", nullptr}},
--    {"i386", {"i386", "athlon", "geode", "i386", "i486", "i586", "i686", nullptr}},
-+    {"i386", {"i386", "athlon", "geode", "i386", "i486", "i586", "i686", "znver1_32", nullptr}},
+-    {"i386", {"i386", "athlon", "geode", "i486", "i586", "i686", nullptr}},
++    {"i386", {"i386", "athlon", "geode", "i486", "i586", "i686", "znver1_32", nullptr}},
      {"ia64", {"ia64", nullptr}},
      {"mips", {"mips", nullptr}},
      {"mipsel", {"mipsel", nullptr}},
-@@ -90,7 +90,7 @@
+@@ -63,7 +63,7 @@
      {"sh3", {"sh3", nullptr}},
      {"sh4", {"sh4", "sh4a", nullptr}},
      {"sparc", {"sparc", "sparc64", "sparc64v", "sparcv8", "sparcv9", "sparcv9v", nullptr}},

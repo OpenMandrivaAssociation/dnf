@@ -175,6 +175,7 @@ Ruby language bindings to the DNF package manager.
 %autosetup -p1 -n %{?snapshot:dnf-main}%{!?snapshot:%{name}-%{version}}
 %cmake \
 	-G Ninja \
+	-DWITH_PLUGIN_RHSM=OFF \
 	-DWITH_MAN:BOOL=true \
 	-DPERL_INSTALLDIRS=vendor \
 	-DRuby_VENDORARCH_DIR=%{_libdir}/ruby/vendor_ruby/2.7.0 \

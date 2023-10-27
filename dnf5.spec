@@ -9,7 +9,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.5
+Version: 5.1.6
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -28,7 +28,7 @@ BuildRequires: pkgconfig(libcomps)
 BuildRequires: pkgconfig(fmt)
 BuildRequires: pkgconfig(json-c)
 BuildRequires: pkgconfig(modulemd-2.0)
-BuildRequires: pkgconfig(libsolv)
+BuildRequires: pkgconfig(libsolv) >= 0.7.25
 BuildRequires: pkgconfig(libsolvext)
 BuildRequires: pkgconfig(rpm)
 BuildRequires: pkgconfig(libxml-2.0)

@@ -105,6 +105,7 @@ Group: System/Libraries
 %if %{with dnf5_default}
 Conflicts: dnf-data < 4.16.0
 %endif
+Requires: %{_sysconfdir}/dnf/dnf.conf
 %rename %{_lib}dnf1
 
 %description -n %{libname}

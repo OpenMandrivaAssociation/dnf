@@ -10,7 +10,7 @@
 Summary: Command-line package manager
 Name: dnf5
 Version: 5.1.6
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -197,6 +197,10 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/yum
 
 ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 
+# We get this from distro-release -- to make sure $releasever is set
+# correctly and to share the file between dnf4 and dnf5
+rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
+
 %post -n dnf5daemon-server
 %systemd_post dnf5daemon-server.service
 
@@ -258,11 +262,8 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 
 %files -n %{libname}
 %if %{with dnf5_default}
-%config(noreplace) %{_sysconfdir}/dnf/dnf.conf
 %dir %{_sysconfdir}/dnf/vars
 %dir %{_sysconfdir}/dnf/protected.d
-%else
-%exclude %{_sysconfdir}/dnf/dnf.conf
 %endif
 %dir %{_sysconfdir}/dnf/libdnf5-plugins
 %dir %{_libdir}/libdnf5

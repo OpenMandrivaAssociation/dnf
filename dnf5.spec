@@ -9,7 +9,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.7
+Version: 5.1.8
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -40,6 +40,7 @@ BuildRequires: pkgconfig(sqlite3) >= 3.35.0
 BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
+BuildRequires:  pkgconfig(libcurl)
 BuildRequires: cmake(bash-completion)
 BuildRequires: createrepo_c
 # For -lstdc++fs, but is that really needed?
@@ -92,6 +93,8 @@ Provides: dnf5-command(makecache)
 Provides: dnf5-command(builddep)
 Provides: dnf5-command(changelog)
 Provides: dnf5-command(copr)
+Provides: dnf5-command(config-manager)
+Provides: dnf5-command(needs-restarting)
 Provides: dnf5-command(repoclosure)
 
 %description
@@ -202,6 +205,19 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 # correctly and to share the file between dnf4 and dnf5
 rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 
+%find_lang dnf5
+%find_lang dnf5-plugin-builddep
+%find_lang dnf5-plugin-changelog
+%find_lang dnf5-plugin-config-manager
+%find_lang dnf5-plugin-copr
+%find_lang dnf5-plugin-needs-restarting
+%find_lang dnf5-plugin-repoclosure
+%find_lang dnf5daemon-client
+%find_lang dnf5daemon-server
+%find_lang libdnf5
+%find_lang libdnf5-cli
+%find_lang libdnf5-plugin-actions
+
 %post -n dnf5daemon-server
 %systemd_post dnf5daemon-server.service
 
@@ -211,7 +227,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %postun -n dnf5daemon-server
 %systemd_postun_with_restart dnf5daemon-server.service
 
-%files
+%files -f dnf5.lang -f dnf5-plugin-builddep.lang -f dnf5-plugin-changelog.lang -f dnf5-plugin-config-manager.lang -f dnf5-plugin-copr.lang -f dnf5-plugin-needs-restarting.lang -f dnf5-plugin-repoclosure.lang -f libdnf5-plugin-actions.lang
 %dir %{_sysconfdir}/dnf
 %dir %{_sysconfdir}/dnf/dnf5-aliases.d
 %doc %{_sysconfdir}/dnf/dnf5-aliases.d/README
@@ -252,6 +268,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-leaves.8*
 %doc %{_mandir}/man8/dnf5-makecache.8*
 %doc %{_mandir}/man8/dnf5-mark.8*
+%doc %{_mandir}/man8/dnf5-needs-restarting.8.*
 %doc %{_mandir}/man8/dnf5-reinstall.8*
 %doc %{_mandir}/man8/dnf5-remove.8*
 %doc %{_mandir}/man8/dnf5-repo.8*
@@ -261,7 +278,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-swap.8*
 %doc %{_mandir}/man8/dnf5-upgrade.8*
 
-%files -n %{libname}
+%files -n %{libname} -f libdnf5.lang
 %if %{with dnf5_default}
 %dir %{_sysconfdir}/dnf/vars
 %dir %{_sysconfdir}/dnf/protected.d
@@ -271,14 +288,14 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_libdir}/libdnf5.so.%{major}*
 %{_var}/cache/libdnf5/
 
-%files -n %{clilibname}
+%files -n %{clilibname} -f libdnf5-cli.lang
 %{_libdir}/libdnf5-cli.so.%{major}*
 
-%files -n dnf5daemon-client
+%files -n dnf5daemon-client -f dnf5daemon-client.lang
 %{_bindir}/dnf5daemon-client
 %doc %{_mandir}/man8/dnf5daemon-client.8.*
 
-%files -n dnf5daemon-server
+%files -n dnf5daemon-server -f dnf5daemon-server.lang
 %{_bindir}/dnf5daemon-server
 %{_unitdir}/dnf5daemon-server.service
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/org.rpm.dnf.v0.conf

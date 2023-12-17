@@ -9,7 +9,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.8
+Version: 5.1.9
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -96,6 +96,8 @@ Provides: dnf5-command(copr)
 Provides: dnf5-command(config-manager)
 Provides: dnf5-command(needs-restarting)
 Provides: dnf5-command(repoclosure)
+Provides: dnf5-command(check)
+Provides: dnf5-command(provides)
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
@@ -257,6 +259,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-advisory.8*
 %doc %{_mandir}/man8/dnf5-autoremove.8*
 %doc %{_mandir}/man8/dnf5-builddep.8.*
+%doc %{_mandir}/man8/dnf5-check.8.*
 %doc %{_mandir}/man8/dnf5-clean.8*
 %doc %{_mandir}/man8/dnf5-copr.8.*
 %doc %{_mandir}/man8/dnf5-distro-sync.8*
@@ -269,6 +272,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-makecache.8*
 %doc %{_mandir}/man8/dnf5-mark.8*
 %doc %{_mandir}/man8/dnf5-needs-restarting.8.*
+%doc %{_mandir}/man8/dnf5-provides.8.*
 %doc %{_mandir}/man8/dnf5-reinstall.8*
 %doc %{_mandir}/man8/dnf5-remove.8*
 %doc %{_mandir}/man8/dnf5-repo.8*

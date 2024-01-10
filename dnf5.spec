@@ -185,7 +185,8 @@ Ruby language bindings to the DNF package manager.
 	-DWITH_MAN:BOOL=true \
 	-DPERL_INSTALLDIRS=vendor \
 	-DRuby_VENDORARCH_DIR=%{_libdir}/ruby/vendor_ruby/2.7.0 \
-	-DRuby_VENDORLIBDIR=%{_datadir}/ruby/vendor_ruby
+	-DRuby_VENDORLIBDIR=%{_datadir}/ruby/vendor_ruby \
+	-DPKG_CONFIG_EXECUTABLE=%{_bindir}/pkg-config
 
 %build
 %ninja_build -C build

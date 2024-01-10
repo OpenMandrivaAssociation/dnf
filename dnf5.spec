@@ -183,6 +183,15 @@ Ruby language bindings to the DNF package manager.
 
 %prep
 %autosetup -p1 -n %{?snapshot:dnf-main}%{!?snapshot:%{name}-%{version}}
+%if %{cross_compiling}
+# FIXME this should be fixed properly, but for now, this
+# is the fastest way to limit the damage of an added
+# -I/usr/include
+find . -name CMakeLists.txt |xargs \
+	sed -i -e 's/include_directories(\${LIBXML2/#&/g' -e 's/include_directories(\${GLIB/#&/g' -e 's/include_directories(\${JSONC/#&/g' -e 's/include_directories(\${REPO/#&/g' -e 's/target_include_directories(/#&/g'
+%global optflags %{optflags} -I%{_prefix}/%{_target_platform}/include/glib-2.0 -I%{_prefix}/%{_target_platform}/include/gio-unix-2.0 -I%{_prefix}/%{_target_platform}/%{_lib}/glib-2.0/include -I%{_prefix}/%{_target_platform}/include/libxml2 -I%{_prefix}/%{_target_platform}/include/json-c
+%endif
+
 %cmake \
 	-G Ninja \
 	-DWITH_PLUGIN_RHSM=OFF \

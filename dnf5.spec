@@ -6,6 +6,7 @@
 
 # (tpg) dnf5 is not yet ready to replace dnf
 %bcond_with dnf5_default
+%bcond_without ruby
 
 Summary: Command-line package manager
 Name: dnf5
@@ -20,6 +21,7 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 %endif
 Patch0: dnf5-znver1.patch
+Patch1: dnf-5.1.9-clang17.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: cmake(toml11)
@@ -40,7 +42,7 @@ BuildRequires: pkgconfig(sqlite3) >= 3.35.0
 BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
-BuildRequires:  pkgconfig(libcurl)
+BuildRequires: pkgconfig(libcurl)
 BuildRequires: cmake(bash-completion)
 BuildRequires: createrepo_c
 # For -lstdc++fs, but is that really needed?
@@ -48,7 +50,9 @@ BuildRequires: stdc++-static-devel
 # Language bindings
 BuildRequires: perl-devel
 BuildRequires: pkgconfig(python3)
+%if %{with ruby}
 BuildRequires: ruby-devel
+%endif
 BuildRequires: swig
 # For building man pages
 BuildRequires: python-sphinx
@@ -184,8 +188,14 @@ Ruby language bindings to the DNF package manager.
 	-DWITH_PLUGIN_RHSM=OFF \
 	-DWITH_MAN:BOOL=true \
 	-DPERL_INSTALLDIRS=vendor \
-	-DRuby_VENDORARCH_DIR=%{_libdir}/ruby/vendor_ruby/2.7.0 \
+%if %{with ruby}
+	-DRuby_VENDORARCH_DIR=%{_libdir}/ruby/vendor_ruby/3.2.0 \
 	-DRuby_VENDORLIBDIR=%{_datadir}/ruby/vendor_ruby \
+%else
+	-DWITH_RUBY:BOOL=OFF \
+%endif
+	-DPython3_EXECUTABLE=%{_bindir}/python \
+	-DPERL_EXECUTABLE=%{_bindir}/perl \
 	-DPKG_CONFIG_EXECUTABLE=%{_bindir}/pkg-config
 
 %build
@@ -334,5 +344,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_libdir}/perl5/vendor_perl/libdnf5
 %{_libdir}/perl5/vendor_perl/libdnf5_cli
 
+%if %{with ruby}
 %files -n ruby-%{name}
 %{_libdir}/ruby/vendor_ruby/*/*
+%endif

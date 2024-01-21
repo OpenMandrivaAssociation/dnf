@@ -10,7 +10,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.9
+Version: 5.1.11
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -22,6 +22,7 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{ver
 %endif
 Patch0: dnf5-znver1.patch
 Patch1: dnf-5.1.9-clang17.patch
+Patch2: dnf5-5.1.11-po-syntax.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: cmake(toml11)
@@ -273,15 +274,18 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_libdir}/libdnf5/plugins/actions.so
 %config %{_sysconfdir}/dnf/libdnf5-plugins/actions.conf
 %dir %{_sysconfdir}/dnf/libdnf5-plugins/actions.d
-%doc %{_mandir}/man8/libdnf5-actions.8.*
+%doc %{_mandir}/man5/dnf5.conf.5*
+%doc %{_mandir}/man5/dnf5.conf-todo.5*
+%doc %{_mandir}/man5/dnf5.conf-deprecated.5*
+%doc %{_mandir}/man8/libdnf5-actions.8*
 %doc %{_mandir}/man7/dnf5*.7*
 %doc %{_mandir}/man8/dnf5.8*
 %doc %{_mandir}/man8/dnf5-advisory.8*
 %doc %{_mandir}/man8/dnf5-autoremove.8*
-%doc %{_mandir}/man8/dnf5-builddep.8.*
-%doc %{_mandir}/man8/dnf5-check.8.*
+%doc %{_mandir}/man8/dnf5-builddep.8*
+%doc %{_mandir}/man8/dnf5-check.8*
 %doc %{_mandir}/man8/dnf5-clean.8*
-%doc %{_mandir}/man8/dnf5-copr.8.*
+%doc %{_mandir}/man8/dnf5-copr.8*
 %doc %{_mandir}/man8/dnf5-distro-sync.8*
 %doc %{_mandir}/man8/dnf5-downgrade.8*
 %doc %{_mandir}/man8/dnf5-download.8*
@@ -291,12 +295,12 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-leaves.8*
 %doc %{_mandir}/man8/dnf5-makecache.8*
 %doc %{_mandir}/man8/dnf5-mark.8*
-%doc %{_mandir}/man8/dnf5-needs-restarting.8.*
-%doc %{_mandir}/man8/dnf5-provides.8.*
+%doc %{_mandir}/man8/dnf5-needs-restarting.8*
+%doc %{_mandir}/man8/dnf5-provides.8*
 %doc %{_mandir}/man8/dnf5-reinstall.8*
 %doc %{_mandir}/man8/dnf5-remove.8*
 %doc %{_mandir}/man8/dnf5-repo.8*
-%doc %{_mandir}/man8/dnf5-repoclosure.8.*
+%doc %{_mandir}/man8/dnf5-repoclosure.8*
 %doc %{_mandir}/man8/dnf5-repoquery.8*
 %doc %{_mandir}/man8/dnf5-search.8*
 %doc %{_mandir}/man8/dnf5-swap.8*
@@ -317,7 +321,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 
 %files -n dnf5daemon-client -f dnf5daemon-client.lang
 %{_bindir}/dnf5daemon-client
-%doc %{_mandir}/man8/dnf5daemon-client.8.*
+%doc %{_mandir}/man8/dnf5daemon-client.8*
 
 %files -n dnf5daemon-server -f dnf5daemon-server.lang
 %{_bindir}/dnf5daemon-server
@@ -326,8 +330,8 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_datadir}/dbus-1/system-services/org.rpm.dnf.v0.service
 %{_datadir}/dbus-1/interfaces/org.rpm.dnf.v0.*.xml
 %{_datadir}/polkit-1/actions/org.rpm.dnf.v0.policy
-%doc %{_mandir}/man8/dnf5daemon-server.8.*
-%doc %{_mandir}/man8/dnf5daemon-dbus-api.8.*
+%doc %{_mandir}/man8/dnf5daemon-server.8*
+%doc %{_mandir}/man8/dnf5daemon-dbus-api.8*
 
 %files -n %{devname}
 %{_includedir}/libdnf5-cli

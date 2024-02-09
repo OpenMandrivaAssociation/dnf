@@ -11,7 +11,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.11
+Version: 5.1.12
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -23,7 +23,6 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{ver
 %endif
 Patch0: dnf5-znver1.patch
 Patch1: dnf-5.1.9-clang17.patch
-Patch2: dnf5-5.1.11-po-syntax.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: cmake(toml11)

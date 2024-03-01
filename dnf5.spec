@@ -11,7 +11,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.12
+Version: 5.1.13
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -25,6 +25,7 @@ Patch0: dnf5-znver1.patch
 Patch1: dnf-5.1.9-clang17.patch
 BuildRequires: cmake
 BuildRequires: ninja
+BuildRequires: gettext
 BuildRequires: cmake(toml11)
 BuildRequires: perl(Test::Exception)
 BuildRequires: pkgconfig(libcomps)
@@ -48,6 +49,8 @@ BuildRequires: cmake(bash-completion)
 BuildRequires: createrepo_c
 # For -lstdc++fs, but is that really needed?
 BuildRequires: stdc++-static-devel
+# /usr/bin/clang-scan-deps
+BuildRequires: clang-tools
 # Language bindings
 BuildRequires: perl-devel
 BuildRequires: pkgconfig(python3)

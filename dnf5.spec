@@ -12,7 +12,7 @@
 Summary: Command-line package manager
 Name: dnf5
 Version: 5.1.13
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -23,6 +23,7 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{ver
 %endif
 Patch0: dnf5-znver1.patch
 Patch1: dnf-5.1.9-clang17.patch
+Patch2: dnf-5.1.13-fix-build.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: gettext
@@ -46,6 +47,7 @@ BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
 BuildRequires: pkgconfig(libcurl)
 BuildRequires: cmake(bash-completion)
+BuildRequires: gettext
 BuildRequires: createrepo_c
 # For -lstdc++fs, but is that really needed?
 BuildRequires: stdc++-static-devel
@@ -111,6 +113,17 @@ Provides: dnf5-command(provides)
 DNF5 is a command-line package manager that automates the process of installing,
 upgrading, configuring, and removing computer programs in a consistent manner.
 It supports RPM packages, modulemd modules, and comps groups & environments
+
+%package plugin-automatic
+Summary: dnf5 plugin for automatic updates
+Group: System
+Requires: %{name} = %{EVRD}
+Provides: dnf5-command(automatic)
+
+%description plugin-automatic
+Alternative CLI to dnf upgrade with specific facilities to make it suitable
+to be executed automatically and regularly from systemd timers, cron jobs
+and similar.
 
 %package -n %{libname}
 Summary: Package management library
@@ -232,6 +245,7 @@ ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
 rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 
 %find_lang dnf5
+%find_lang dnf5-plugin-automatic
 %find_lang dnf5-plugin-builddep
 %find_lang dnf5-plugin-changelog
 %find_lang dnf5-plugin-config-manager
@@ -308,6 +322,13 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-search.8*
 %doc %{_mandir}/man8/dnf5-swap.8*
 %doc %{_mandir}/man8/dnf5-upgrade.8*
+
+%files plugin-automatic -f dnf5-plugin-automatic.lang
+%{_bindir}/dnf-automatic
+%{_prefix}/lib/systemd/system/dnf-automatic.service
+%{_prefix}/lib/systemd/system/dnf-automatic.timer
+%{_prefix}/lib/systemd/system/dnf5-automatic.service
+%{_prefix}/lib/systemd/system/dnf5-automatic.timer
 
 %files -n %{libname} -f libdnf5.lang
 %if %{with dnf5_default}

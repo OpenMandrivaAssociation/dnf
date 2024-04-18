@@ -11,8 +11,8 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.13
-Release: %{?snapshot:0.%{snapshot}.}2
+Version: 5.1.17
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -22,8 +22,7 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 %endif
 Patch0: dnf5-znver1.patch
-Patch1: dnf-5.1.9-clang17.patch
-Patch2: dnf-5.1.13-fix-build.patch
+Patch1: dnf-5.1.17-compile.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: gettext
@@ -322,6 +321,14 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-search.8*
 %doc %{_mandir}/man8/dnf5-swap.8*
 %doc %{_mandir}/man8/dnf5-upgrade.8*
+%doc %{_mandir}/man8/dnf5-changelog.8*
+%doc %{_mandir}/man8/dnf5-check-upgrade.8*
+%doc %{_mandir}/man8/dnf5-info.8*
+%doc %{_mandir}/man8/dnf5-list.8*
+%doc %{_mandir}/man8/dnf5-module.8*
+%doc %{_mandir}/man8/dnf5-offline.8*
+%doc %{_mandir}/man8/dnf5-system-upgrade.8*
+%doc %{_mandir}/man8/dnf5-versionlock.8*
 
 %files plugin-automatic -f dnf5-plugin-automatic.lang
 %{_bindir}/dnf-automatic
@@ -329,6 +336,9 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_prefix}/lib/systemd/system/dnf-automatic.timer
 %{_prefix}/lib/systemd/system/dnf5-automatic.service
 %{_prefix}/lib/systemd/system/dnf5-automatic.timer
+%{_prefix}/lib/systemd/system/dnf5-offline-transaction-cleanup.service
+%{_prefix}/lib/systemd/system/dnf5-offline-transaction.service
+%doc %{_mandir}/man8/dnf5-automatic.8*
 
 %files -n %{libname} -f libdnf5.lang
 %if %{with dnf5_default}

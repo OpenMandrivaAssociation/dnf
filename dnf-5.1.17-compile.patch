@@ -1,0 +1,12 @@
+diff -up dnf5-5.1.17/include/libdnf5-cli/output/transaction_table.hpp.omv~ dnf5-5.1.17/include/libdnf5-cli/output/transaction_table.hpp
+--- dnf5-5.1.17/include/libdnf5-cli/output/transaction_table.hpp.omv~	2024-04-18 16:55:30.012211949 +0200
++++ dnf5-5.1.17/include/libdnf5-cli/output/transaction_table.hpp	2024-04-18 16:55:36.676280541 +0200
+@@ -43,7 +43,7 @@ namespace libdnf5::cli::output {
+ enum { COL_NAME, COL_ARCH, COL_EVR, COL_REPO, COL_SIZE };
+ 
+ 
+-static const char * action_color(libdnf5::transaction::TransactionItemAction action) {
++static inline const char * action_color(libdnf5::transaction::TransactionItemAction action) {
+     switch (action) {
+         case libdnf5::transaction::TransactionItemAction::INSTALL:
+         case libdnf5::transaction::TransactionItemAction::UPGRADE:

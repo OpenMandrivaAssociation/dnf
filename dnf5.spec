@@ -1,7 +1,9 @@
 #define snapshot 20220923
-%define major 1
-%define libname %mklibname dnf5_ %{major}
-%define clilibname %mklibname dnf5-cli %{major}
+%define major 2
+%define oldlibname %mklibname dnf5_ 1
+%define oldclilibname %mklibname dnf5-cli 1
+%define libname %mklibname dnf5
+%define clilibname %mklibname dnf5-cli
 %define devname %mklibname -d dnf5
 %global optflags %{optflags} -Wno-error=vla-cxx-extension
 
@@ -11,7 +13,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.1.17
+Version: 5.2.3.0
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -22,7 +24,7 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 %endif
 Patch0: dnf5-znver1.patch
-Patch1: dnf-5.1.17-compile.patch
+#Patch1: dnf-5.1.17-compile.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: gettext
@@ -132,6 +134,7 @@ Conflicts: dnf-data < 4.16.0
 %endif
 Requires: %{_sysconfdir}/dnf/dnf.conf
 %rename %{_lib}dnf1
+%rename %{oldlibname}
 
 %description -n %{libname}
 Package management library.
@@ -141,6 +144,7 @@ Summary: Library for working with a terminal in a command-line package manager
 Group: System/Libraries
 %rename %{_lib}dnf-cli
 %rename %{_lib}dnf-cli1
+%rename %{oldclilibname}
 
 %description -n %{clilibname}
 Library for working with a terminal in a command-line package manager.
@@ -272,6 +276,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_sysconfdir}/dnf/dnf5-aliases.d/README
 %dir %{_datadir}/dnf5
 %dir %{_datadir}/dnf5/aliases.d
+%dir %{_datadir}/dnf5/dnf5-plugins
 %config %{_datadir}/dnf5/aliases.d/compatibility.conf
 %{_bindir}/dnf5
 %{_bindir}/microdnf
@@ -329,6 +334,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-offline.8*
 %doc %{_mandir}/man8/dnf5-system-upgrade.8*
 %doc %{_mandir}/man8/dnf5-versionlock.8*
+%doc %{_mandir}/man8/dnf5-config-manager.8.zst
 
 %files plugin-automatic -f dnf5-plugin-automatic.lang
 %{_bindir}/dnf-automatic
@@ -338,6 +344,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_prefix}/lib/systemd/system/dnf5-automatic.timer
 %{_prefix}/lib/systemd/system/dnf5-offline-transaction-cleanup.service
 %{_prefix}/lib/systemd/system/dnf5-offline-transaction.service
+%{_datadir}/dnf5/dnf5-plugins/automatic.conf
 %doc %{_mandir}/man8/dnf5-automatic.8*
 
 %files -n %{libname} -f libdnf5.lang
@@ -360,7 +367,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %files -n dnf5daemon-server -f dnf5daemon-server.lang
 %{_bindir}/dnf5daemon-server
 %{_unitdir}/dnf5daemon-server.service
-%config(noreplace) %{_sysconfdir}/dbus-1/system.d/org.rpm.dnf.v0.conf
+%{_datadir}/dbus-1/system.d/org.rpm.dnf.v0.conf
 %{_datadir}/dbus-1/system-services/org.rpm.dnf.v0.service
 %{_datadir}/dbus-1/interfaces/org.rpm.dnf.v0.*.xml
 %{_datadir}/polkit-1/actions/org.rpm.dnf.v0.policy

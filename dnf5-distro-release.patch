@@ -1,0 +1,12 @@
+diff -up dnf5-5.2.3.0/libdnf5/base/base.cpp.omv~ dnf5-5.2.3.0/libdnf5/base/base.cpp
+diff -up dnf5-5.2.3.0/libdnf5/conf/vars.cpp.omv~ dnf5-5.2.3.0/libdnf5/conf/vars.cpp
+--- dnf5-5.2.3.0/libdnf5/conf/vars.cpp.omv~	2024-06-14 02:52:54.303693704 +0200
++++ dnf5-5.2.3.0/libdnf5/conf/vars.cpp	2024-06-14 02:53:40.836226327 +0200
+@@ -67,6 +67,7 @@ static void init_lib_rpm(const char * ar
+ }
+ 
+ static constexpr const char * DISTROVERPKGS[] = {
++    "distro-release-common",
+     "system-release(releasever)",
+     "system-release",
+     "distribution-release(releasever)",

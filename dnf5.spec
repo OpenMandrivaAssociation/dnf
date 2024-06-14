@@ -24,7 +24,7 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 %endif
 Patch0: dnf5-znver1.patch
-#Patch1: dnf-5.1.17-compile.patch
+Patch1: dnf5-distro-release.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: gettext
@@ -233,6 +233,7 @@ find . -name CMakeLists.txt |xargs \
 
 %install
 %ninja_install -C build
+
 # We don't need the README -- we know it's a plugin drop dir
 rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 

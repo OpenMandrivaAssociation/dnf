@@ -19,3 +19,63 @@ diff -Naur dnf5-5.1.4/libdnf5/rpm/arch_private.hpp dnf5-5.1.4.tpg/libdnf5/rpm/ar
      {"loongarch64", {"loongarch64", nullptr}},
      {nullptr, {nullptr}}};
  
+diff -up dnf5-5.2.3.0/libdnf5/base/base.cpp.omv~ dnf5-5.2.3.0/libdnf5/base/base.cpp
+diff -up dnf5-5.2.3.0/libdnf5/conf/vars.cpp.omv~ dnf5-5.2.3.0/libdnf5/conf/vars.cpp
+--- dnf5-5.2.3.0/libdnf5/conf/vars.cpp.omv~	2024-06-14 02:36:48.000602751 +0200
++++ dnf5-5.2.3.0/libdnf5/conf/vars.cpp	2024-06-14 02:51:43.530883490 +0200
+@@ -82,6 +82,42 @@ static constexpr const char * DISTROVERP
+ #define HWCAP_ARM_NEON (1 << 12)
+ #endif
+ 
++#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
++static inline void cpuid(uint32_t op, uint32_t op2, uint32_t *eax, uint32_t *ebx, uint32_t *ecx, uint32_t *edx)
++{
++    asm volatile (
++        "cpuid\n"  
++    : "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx)
++    : "a" (op), "c" (op2));
++}
++
++static int is_ryzen() {
++    uint32_t eax, ebx, ecx, edx;
++    char vendor[13];
++    int family;
++    vendor[12]=0;
++#ifdef __i386__
++    cpuid(0, &eax, &ebx, &ecx, &edx);
++#else
++    cpuid(0, 0, &eax, &ebx, &ecx, &edx);
++#endif
++    memcpy(vendor, &ebx, sizeof(ebx));
++    memcpy(vendor+4, &edx, sizeof(edx));
++    memcpy(vendor+8, &ecx, sizeof(ecx));
++    if (strncmp(vendor, "AuthenticAMD", 12))
++        return 0;
++#ifdef __i386__
++    cpuid(1, &eax, &ebx, &ecx, &edx);
++#else
++    cpuid(1, 0, &eax, &ebx, &ecx, &edx);
++#endif
++    family = (eax>>8)&0xf;
++    if(family == 0xf)
++        family += (eax>>20)&0x7f;
++    return family >= 0x17;
++}
++#endif
++
+ static std::string detect_arch() {
+     struct utsname un;
+ 
+@@ -106,6 +142,12 @@ static std::string detect_arch() {
+         *modifier++ = endian;
+         *modifier = 0;
+     }
++#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
++    if (!strcmp(un.machine, "x86_64") && is_ryzen()) {
++        /* FIXME we also want to support x86_64_v* here... */
++        return "znver1";
++    }
++#endif
+ #ifdef __MIPSEL__
+     // support for little endian MIPS
+     if (!strcmp(un.machine, "mips"))

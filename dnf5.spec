@@ -13,7 +13,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.2.3.0
+Version: 5.2.4.0
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -278,6 +278,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %dir %{_datadir}/dnf5
 %dir %{_datadir}/dnf5/aliases.d
 %dir %{_datadir}/dnf5/dnf5-plugins
+%config %{_datadir}/dnf5/aliases.d/compatibility-plugins.conf
 %config %{_datadir}/dnf5/aliases.d/compatibility.conf
 %{_bindir}/dnf5
 %{_bindir}/microdnf
@@ -336,6 +337,8 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-system-upgrade.8*
 %doc %{_mandir}/man8/dnf5-versionlock.8*
 %doc %{_mandir}/man8/dnf5-config-manager.8.zst
+%doc %{_mandir}/man8/dnf5-replay.8*
+
 
 %files plugin-automatic -f dnf5-plugin-automatic.lang
 %{_bindir}/dnf-automatic

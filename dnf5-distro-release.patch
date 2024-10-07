@@ -1,9 +1,8 @@
-diff -up dnf5-5.2.3.0/libdnf5/base/base.cpp.omv~ dnf5-5.2.3.0/libdnf5/base/base.cpp
-diff -up dnf5-5.2.3.0/libdnf5/conf/vars.cpp.omv~ dnf5-5.2.3.0/libdnf5/conf/vars.cpp
---- dnf5-5.2.3.0/libdnf5/conf/vars.cpp.omv~	2024-06-14 02:52:54.303693704 +0200
-+++ dnf5-5.2.3.0/libdnf5/conf/vars.cpp	2024-06-14 02:53:40.836226327 +0200
-@@ -67,6 +67,7 @@ static void init_lib_rpm(const char * ar
- }
+diff -up dnf5-5.2.6.2/libdnf5/conf/vars.cpp.2~ dnf5-5.2.6.2/libdnf5/conf/vars.cpp
+--- dnf5-5.2.6.2/libdnf5/conf/vars.cpp.2~	2024-10-07 21:38:06.265781149 +0200
++++ dnf5-5.2.6.2/libdnf5/conf/vars.cpp	2024-10-07 21:39:25.196589862 +0200
+@@ -55,6 +55,7 @@ namespace libdnf5 {
+ static const std::unordered_set<std::string> READ_ONLY_VARIABLES = {"releasever_major", "releasever_minor"};
  
  static constexpr const char * DISTROVERPKGS[] = {
 +    "distro-release-common",

@@ -14,7 +14,7 @@
 Summary: Command-line package manager
 Name: dnf5
 Version: 5.2.6.2
-Release: %{?snapshot:0.%{snapshot}.}2
+Release: %{?snapshot:0.%{snapshot}.}3
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -23,8 +23,6 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main
 %else
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 %endif
-Patch0: dnf5-znver1.patch
-Patch1: dnf5-distro-release.patch
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: gettext
@@ -109,6 +107,19 @@ Provides: dnf5-command(needs-restarting)
 Provides: dnf5-command(repoclosure)
 Provides: dnf5-command(check)
 Provides: dnf5-command(provides)
+
+%patchlist
+dnf5-znver1.patch
+dnf5-distro-release.patch
+dnf5-swig-4.3.patch
+# sdbus-cpp 2.0 support from
+# https://github.com/rpm-software-management/dnf5/tree/mblaha/sdbus-cpp-2
+https://github.com/rpm-software-management/dnf5/commit/4056e9b21c9001fd7deff8533cbaf5aa53420a0a.patch
+https://github.com/rpm-software-management/dnf5/commit/387e9609d049f1640ec9e10244e40d46028a845f.patch
+https://github.com/rpm-software-management/dnf5/commit/57e8204dcef5fc5496c437b5f5dc4218910cf4df.patch
+https://github.com/rpm-software-management/dnf5/commit/64bd108259bb662eb527dd25256f16803a67f581.patch
+https://github.com/rpm-software-management/dnf5/commit/d2347ff2586e457aeaaccfec63d447e5840b671c.patch
+https://github.com/rpm-software-management/dnf5/commit/f4dfaf160ffa61b2f1f889d6c7b6f04b59fbb97c.patch
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,

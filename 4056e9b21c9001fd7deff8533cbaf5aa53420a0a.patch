@@ -1,0 +1,87 @@
+From 4056e9b21c9001fd7deff8533cbaf5aa53420a0a Mon Sep 17 00:00:00 2001
+From: Marek Blaha <mblaha@redhat.com>
+Date: Fri, 17 May 2024 12:11:06 +0200
+Subject: [PATCH] cmake: Move sdbus-c++ check to one place
+
+Also set SDBUS_CPP_VERSION_2 macro in case sdbus-c++ was found in
+version 2. This enables conditional compilation according the version of
+the library found.
+---
+ cmake/sdbus_cpp.cmake                               | 11 +++++++++++
+ dnf5-plugins/needs_restarting_plugin/CMakeLists.txt |  2 +-
+ dnf5/CMakeLists.txt                                 |  2 +-
+ dnf5daemon-client/CMakeLists.txt                    |  3 +--
+ dnf5daemon-server/CMakeLists.txt                    |  2 +-
+ 5 files changed, 15 insertions(+), 5 deletions(-)
+ create mode 100644 cmake/sdbus_cpp.cmake
+
+diff --git a/cmake/sdbus_cpp.cmake b/cmake/sdbus_cpp.cmake
+new file mode 100644
+index 000000000..914b20f2b
+--- /dev/null
++++ b/cmake/sdbus_cpp.cmake
+@@ -0,0 +1,11 @@
++
++# Attempt to find sdbus-c++ version 2 (preferred)
++pkg_check_modules(SDBUS_CPP REQUIRED sdbus-c++>=1)
++
++if(SDBUS_CPP_VERSION LESS 2)
++    message(STATUS "Using sdbus-c++ version 1")
++else()
++    # Define macro for version 2 if found
++    add_definitions(-DSDBUS_CPP_VERSION_2)
++    message(STATUS "Using sdbus-c++ version 2")
++endif()
+diff --git a/dnf5-plugins/needs_restarting_plugin/CMakeLists.txt b/dnf5-plugins/needs_restarting_plugin/CMakeLists.txt
+index 651d9f3d0..cf290146e 100644
+--- a/dnf5-plugins/needs_restarting_plugin/CMakeLists.txt
++++ b/dnf5-plugins/needs_restarting_plugin/CMakeLists.txt
+@@ -7,7 +7,7 @@ add_library(needs_restarting_cmd_plugin MODULE needs_restarting.cpp needs_restar
+ # disable the 'lib' prefix in order to create needs_restarting_cmd_plugin.so
+ set_target_properties(needs_restarting_cmd_plugin PROPERTIES PREFIX "")
+ 
+-pkg_check_modules(SDBUS_CPP REQUIRED sdbus-c++)
++include(sdbus_cpp)
+ 
+ target_link_libraries(needs_restarting_cmd_plugin PRIVATE dnf5 libdnf5 libdnf5-cli ${SDBUS_CPP_LIBRARIES})
+ 
+diff --git a/dnf5/CMakeLists.txt b/dnf5/CMakeLists.txt
+index 6ef8c67c8..05696137a 100644
+--- a/dnf5/CMakeLists.txt
++++ b/dnf5/CMakeLists.txt
+@@ -45,7 +45,7 @@ install(TARGETS dnf5 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+ pkg_check_modules(RPM REQUIRED rpm>=4.17.0)
+ 
+ if(WITH_SYSTEMD)
+-  pkg_check_modules(SDBUS_CPP REQUIRED sdbus-c++)
++  include(sdbus_cpp)
+   pkg_check_modules(LIBSYSTEMD REQUIRED libsystemd)
+   add_definitions(-DWITH_SYSTEMD)
+   target_link_libraries(dnf5 PRIVATE ${RPM_LIBRARIES} ${SDBUS_CPP_LIBRARIES} ${LIBSYSTEMD_LIBRARIES})
+diff --git a/dnf5daemon-client/CMakeLists.txt b/dnf5daemon-client/CMakeLists.txt
+index aa824d715..142076e09 100644
+--- a/dnf5daemon-client/CMakeLists.txt
++++ b/dnf5daemon-client/CMakeLists.txt
+@@ -13,8 +13,7 @@ include_directories(.)
+ # TODO(mblaha) workaround for dnf5daemon-client using server's headers, fix
+ include_directories(..)
+ 
+-pkg_check_modules(SDBUS_CPP REQUIRED sdbus-c++>=0.9.0)
+-
++include(sdbus_cpp)
+ pkg_check_modules(JSONC REQUIRED json-c)
+ include_directories(${JSONC_INCLUDE_DIRS})
+ 
+diff --git a/dnf5daemon-server/CMakeLists.txt b/dnf5daemon-server/CMakeLists.txt
+index caeee223a..2897404c0 100644
+--- a/dnf5daemon-server/CMakeLists.txt
++++ b/dnf5daemon-server/CMakeLists.txt
+@@ -12,7 +12,7 @@ add_definitions(-DGETTEXT_DOMAIN=\"${GETTEXT_DOMAIN}\")
+ include_directories(.)
+ 
+ pkg_check_modules(JSONC REQUIRED json-c)
+-pkg_check_modules(SDBUS_CPP REQUIRED sdbus-c++>=0.9.0)
++include(sdbus_cpp)
+ find_package(Threads)
+ 
+ include_directories(${JSONC_INCLUDE_DIRS})

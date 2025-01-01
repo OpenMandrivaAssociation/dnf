@@ -1,6 +1,6 @@
-diff -up dnf5-5.2.6.2/dnf5daemon-client/context.cpp.8~ dnf5-5.2.6.2/dnf5daemon-client/context.cpp
---- dnf5-5.2.6.2/dnf5daemon-client/context.cpp.8~	2024-10-22 19:02:38.795581821 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-client/context.cpp	2024-10-22 19:02:38.805581936 +0200
+diff -up dnf5-5.2.8.1/dnf5daemon-client/context.cpp.3~ dnf5-5.2.8.1/dnf5daemon-client/context.cpp
+--- dnf5-5.2.8.1/dnf5daemon-client/context.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-client/context.cpp	2025-01-01 04:34:00.305859727 +0100
 @@ -37,7 +37,9 @@ void Context::init_session(sdbus::IConne
      // open dnf5daemon-server session
      auto cfg = static_cast<DaemonCommand *>(get_selected_command())->session_config();
@@ -21,9 +21,9 @@ diff -up dnf5-5.2.6.2/dnf5daemon-client/context.cpp.8~ dnf5-5.2.6.2/dnf5daemon-c
  }
  
  
-diff -up dnf5-5.2.6.2/dnf5daemon-server/services/advisory/advisory.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/services/advisory/advisory.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/services/advisory/advisory.cpp.8~	2024-09-20 19:41:22.000000000 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/services/advisory/advisory.cpp	2024-10-22 19:02:38.805581936 +0200
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/advisory/advisory.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/services/advisory/advisory.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/advisory/advisory.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/advisory/advisory.cpp	2025-01-01 04:34:00.305912977 +0100
 @@ -31,6 +31,20 @@ namespace dnfdaemon {
  
  void Advisory::dbus_register() {
@@ -53,10 +53,10 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/advisory/advisory.cpp.8~ dnf5-5
  }
  
  libdnf5::advisory::AdvisoryQuery Advisory::advisory_query_from_options(
-diff -up dnf5-5.2.6.2/dnf5daemon-server/services/base/base.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/services/base/base.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/services/base/base.cpp.8~	2024-09-20 19:41:22.000000000 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/services/base/base.cpp	2024-10-22 19:02:38.805581936 +0200
-@@ -44,6 +44,57 @@ static const std::unordered_set<std::str
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/base/base.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/services/base/base.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/base/base.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/base/base.cpp	2025-01-01 04:34:00.305966999 +0100
+@@ -45,6 +45,67 @@ static const std::unordered_set<std::str
  
  void Base::dbus_register() {
      auto dbus_object = session.get_dbus_object();
@@ -82,6 +82,16 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/base/base.cpp.8~ dnf5-5.2.6.2/d
 +                {"success", "error_msg"},
 +                [this](sdbus::MethodCall call) -> void {
 +                    session.get_threads_manager().handle_method(*this, &Base::clean, call, session.session_locale);
++                },
++                {}},
++            sdbus::MethodVTableItem{
++                sdbus::MethodName{"reset"},
++                sdbus::Signature{""},
++                {},
++                sdbus::Signature{"bs"},
++                {"success", "error_msg"},
++                [this](sdbus::MethodCall call) -> void {
++                    session.get_threads_manager().handle_method(*this, &Base::reset, call, session.session_locale);
 +                },
 +                {}},
 +            sdbus::SignalVTableItem{
@@ -114,7 +124,7 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/base/base.cpp.8~ dnf5-5.2.6.2/d
      dbus_object->registerMethod(
          dnfdaemon::INTERFACE_BASE, "read_all_repos", "", {}, "b", {"success"}, [this](sdbus::MethodCall call) -> void {
              session.get_threads_manager().handle_method(*this, &Base::read_all_repos, call, session.session_locale);
-@@ -84,6 +135,7 @@ void Base::dbus_register() {
+@@ -95,6 +156,7 @@ void Base::dbus_register() {
          dnfdaemon::SIGNAL_REPO_KEY_IMPORT_REQUEST,
          "osasssx",
          {"session_object_path", "key_id", "user_ids", "key_fingerprint", "key_url", "timestamp"});
@@ -122,9 +132,9 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/base/base.cpp.8~ dnf5-5.2.6.2/d
  }
  
  sdbus::MethodReply Base::read_all_repos(sdbus::MethodCall & call) {
-diff -up dnf5-5.2.6.2/dnf5daemon-server/services/comps/group.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/services/comps/group.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/services/comps/group.cpp.8~	2024-09-20 19:41:22.000000000 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/services/comps/group.cpp	2024-10-22 19:02:38.805581936 +0200
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/comps/group.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/services/comps/group.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/comps/group.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/comps/group.cpp	2025-01-01 04:34:00.306013467 +0100
 @@ -118,10 +118,31 @@ dnfdaemon::KeyValueMap group_to_map(libd
  
  void Group::dbus_register() {
@@ -158,10 +168,10 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/comps/group.cpp.8~ dnf5-5.2.6.2
  }
  
  sdbus::MethodReply Group::list(sdbus::MethodCall & call) {
-diff -up dnf5-5.2.6.2/dnf5daemon-server/services/goal/goal.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/services/goal/goal.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/services/goal/goal.cpp.8~	2024-10-22 19:02:38.795581821 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/services/goal/goal.cpp	2024-10-22 19:04:27.646597535 +0200
-@@ -60,8 +60,65 @@ static std::string dbus_transaction_item
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/goal/goal.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/services/goal/goal.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/goal/goal.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/goal/goal.cpp	2025-01-01 04:34:00.306078700 +0100
+@@ -60,8 +60,64 @@ static std::string dbus_transaction_item
  
  void Goal::dbus_register() {
      auto dbus_object = session.get_dbus_object();
@@ -220,8 +230,7 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/goal/goal.cpp.8~ dnf5-5.2.6.2/d
 +                sdbus::Signature{"bs"},
 +                {"success", "error_msg"},
 +                [this](sdbus::MethodCall call) -> void {
-+                    session.get_threads_manager().handle_method(
-+                        *this, &Goal::cancel, call, session.session_locale);
++                    session.get_threads_manager().handle_method(*this, &Goal::cancel, call, session.session_locale);
 +                },
 +                {}})
 +        .forInterface(dnfdaemon::INTERFACE_GOAL);
@@ -229,17 +238,17 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/goal/goal.cpp.8~ dnf5-5.2.6.2/d
      dbus_object->registerMethod(
          dnfdaemon::INTERFACE_GOAL,
          "resolve",
-@@ -114,6 +171,7 @@ void Goal::dbus_register() {
-         [this](sdbus::MethodCall call) -> void {
-             session.get_threads_manager().handle_method(*this, &Goal::cancel, call, session.session_locale);
+@@ -118,6 +174,7 @@ void Goal::dbus_register() {
+         dnfdaemon::INTERFACE_GOAL, "reset", "", {}, "", {}, [this](sdbus::MethodCall call) -> void {
+             session.get_threads_manager().handle_method(*this, &Goal::reset, call, session.session_locale);
          });
 +#endif
  }
  
  sdbus::MethodReply Goal::resolve(sdbus::MethodCall & call) {
-diff -up dnf5-5.2.6.2/dnf5daemon-server/services/offline/offline.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/services/offline/offline.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/services/offline/offline.cpp.8~	2024-10-22 19:02:38.795581821 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/services/offline/offline.cpp	2024-10-22 19:02:38.805581936 +0200
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/offline/offline.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/services/offline/offline.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/offline/offline.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/offline/offline.cpp	2025-01-01 04:34:00.306141438 +0100
 @@ -52,6 +52,53 @@ Offline::Scheduled Offline::offline_tran
  
  void Offline::dbus_register() {
@@ -302,10 +311,10 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/offline/offline.cpp.8~ dnf5-5.2
  }
  
  sdbus::MethodReply Offline::get_status(sdbus::MethodCall & call) {
-diff -up dnf5-5.2.6.2/dnf5daemon-server/services/repo/repo.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/services/repo/repo.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/services/repo/repo.cpp.8~	2024-09-20 19:41:22.000000000 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/services/repo/repo.cpp	2024-10-22 19:02:38.805581936 +0200
-@@ -261,6 +261,52 @@ bool keyval_repo_compare(const dnfdaemon
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/repo/repo.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/services/repo/repo.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/repo/repo.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/repo/repo.cpp	2025-01-01 04:34:00.306187876 +0100
+@@ -262,6 +262,52 @@ bool keyval_repo_compare(const dnfdaemon
  
  void Repo::dbus_register() {
      auto dbus_object = session.get_dbus_object();
@@ -358,7 +367,7 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/repo/repo.cpp.8~ dnf5-5.2.6.2/d
      dbus_object->registerMethod(
          dnfdaemon::INTERFACE_REPO,
          "list",
-@@ -289,6 +335,7 @@ void Repo::dbus_register() {
+@@ -290,6 +336,7 @@ void Repo::dbus_register() {
          dnfdaemon::INTERFACE_REPO, "disable", "as", {"repo_ids"}, "", {}, [this](sdbus::MethodCall call) -> void {
              session.get_threads_manager().handle_method(*this, &Repo::disable, call, session.session_locale);
          });
@@ -366,9 +375,9 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/repo/repo.cpp.8~ dnf5-5.2.6.2/d
  }
  
  sdbus::MethodReply Repo::confirm_key(sdbus::MethodCall & call) {
-diff -up dnf5-5.2.6.2/dnf5daemon-server/services/rpm/rpm.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/services/rpm/rpm.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/services/rpm/rpm.cpp.8~	2024-10-22 19:02:38.785581706 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/services/rpm/rpm.cpp	2024-10-22 19:02:38.805581936 +0200
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp	2025-01-01 04:34:00.306268598 +0100
 @@ -33,6 +33,183 @@ along with libdnf.  If not, see <https:/
  
  void Rpm::dbus_register() {
@@ -561,10 +570,10 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/services/rpm/rpm.cpp.8~ dnf5-5.2.6.2/dnf
  }
  
  std::vector<std::string> get_filter_patterns(dnfdaemon::KeyValueMap options, const std::string & option) {
-diff -up dnf5-5.2.6.2/dnf5daemon-server/session.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/session.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/session.cpp.8~	2024-10-22 19:02:38.795581821 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/session.cpp	2024-10-22 19:02:38.805581936 +0200
-@@ -145,7 +145,10 @@ Session::Session(
+diff -up dnf5-5.2.8.1/dnf5daemon-server/session.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/session.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/session.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/session.cpp	2025-01-01 04:34:45.850330045 +0100
+@@ -159,7 +159,10 @@ Session::Session(
      for (auto & s : services) {
          s->dbus_register();
      }
@@ -572,23 +581,22 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/session.cpp.8~ dnf5-5.2.6.2/dnf5daemon-s
 +#ifndef SDBUS_CPP_VERSION_2
      dbus_object->finishRegistration();
 +#endif
- 
-     base->set_download_callbacks(std::make_unique<dnf5daemon::DownloadCB>(*this));
  }
-@@ -256,7 +259,10 @@ bool Session::check_authorization(
-     const sdbus::ObjectPath object_path{"/org/freedesktop/PolicyKit1/Authority"};
-     const SDBUS_INTERFACE_NAME_TYPE interface_name{"org.freedesktop.PolicyKit1.Authority"};
+ 
+ Session::~Session() {
+@@ -268,7 +271,9 @@ bool Session::check_authorization(
+     const std::string object_path = "/org/freedesktop/PolicyKit1/Authority";
+     const std::string interface_name = "org.freedesktop.PolicyKit1.Authority";
      auto polkit_proxy = sdbus::createProxy(connection, destination_name, object_path);
-+
 +#ifndef SDBUS_CPP_VERSION_2
      polkit_proxy->finishRegistration();
 +#endif
  
      // call CheckAuthorization method
      sdbus::Struct<bool, bool, std::map<std::string, std::string>> auth_result;
-diff -up dnf5-5.2.6.2/dnf5daemon-server/session_manager.cpp.8~ dnf5-5.2.6.2/dnf5daemon-server/session_manager.cpp
---- dnf5-5.2.6.2/dnf5daemon-server/session_manager.cpp.8~	2024-10-22 19:02:38.785581706 +0200
-+++ dnf5-5.2.6.2/dnf5daemon-server/session_manager.cpp	2024-10-22 19:02:38.805581936 +0200
+diff -up dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp.3~ dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp.3~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp	2025-01-01 04:36:01.409478364 +0100
 @@ -47,6 +47,31 @@ SessionManager::~SessionManager() {
  
  void SessionManager::dbus_register() {
@@ -621,15 +629,14 @@ diff -up dnf5-5.2.6.2/dnf5daemon-server/session_manager.cpp.8~ dnf5-5.2.6.2/dnf5
      dbus_object->registerMethod(
          dnfdaemon::INTERFACE_SESSION_MANAGER,
          "open_session",
-@@ -69,14 +94,20 @@ void SessionManager::dbus_register() {
+@@ -69,13 +94,19 @@ void SessionManager::dbus_register() {
          });
      dbus_object->finishRegistration();
  
 +#endif
 +
      // register signal handler for NameOwnerChanged
-     name_changed_proxy = sdbus::createProxy(
-         *connection, SDBUS_SERVICE_NAME_TYPE{"org.freedesktop.DBus"}, sdbus::ObjectPath{"/org/freedesktop/DBus"});
+     name_changed_proxy = sdbus::createProxy(*connection, "org.freedesktop.DBus", "/org/freedesktop/DBus");
      name_changed_proxy->registerSignalHandler(
 -        "org.freedesktop.DBus", "NameOwnerChanged", [this](sdbus::Signal signal) -> void {
 +        SDBUS_INTERFACE_NAME_TYPE{"org.freedesktop.DBus"},

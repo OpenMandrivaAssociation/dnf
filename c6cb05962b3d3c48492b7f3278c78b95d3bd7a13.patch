@@ -1,4 +1,4 @@
-From 57e8204dcef5fc5496c437b5f5dc4218910cf4df Mon Sep 17 00:00:00 2001
+From c6cb05962b3d3c48492b7f3278c78b95d3bd7a13 Mon Sep 17 00:00:00 2001
 From: Marek Blaha <mblaha@redhat.com>
 Date: Fri, 17 May 2024 13:01:30 +0200
 Subject: [PATCH] dnfdaemon: sdbus::Variant constructor is explicit
@@ -164,7 +164,7 @@ index 4dba94f50..0db5acecf 100644
  
      ctx.session_proxy->callMethod("install")
 diff --git a/dnf5daemon-client/commands/repolist/repolist.cpp b/dnf5daemon-client/commands/repolist/repolist.cpp
-index d1e3704b8..1a5577601 100644
+index 6798bb643..a729b39e9 100644
 --- a/dnf5daemon-client/commands/repolist/repolist.cpp
 +++ b/dnf5daemon-client/commands/repolist/repolist.cpp
 @@ -107,17 +107,17 @@ void RepolistCommand::run() {
@@ -340,10 +340,10 @@ index 7bab99614..f6a6c9bf3 100644
      }
      return collections;
 diff --git a/dnf5daemon-server/services/goal/goal.cpp b/dnf5daemon-server/services/goal/goal.cpp
-index 3aa1c6a7d..fc9575a5c 100644
+index 1803ea5ef..27cc93db5 100644
 --- a/dnf5daemon-server/services/goal/goal.cpp
 +++ b/dnf5daemon-server/services/goal/goal.cpp
-@@ -242,20 +242,20 @@ sdbus::MethodReply Goal::get_transaction_problems(sdbus::MethodCall & call) {
+@@ -249,20 +249,20 @@ sdbus::MethodReply Goal::get_transaction_problems(sdbus::MethodCall & call) {
      goal_resolve_log_list.reserve(resolve_logs.size());
      for (const auto & log : resolve_logs) {
          dnfdaemon::KeyValueMap goal_resolve_log_item;
@@ -371,7 +371,7 @@ index 3aa1c6a7d..fc9575a5c 100644
          }
          if (log.get_solver_problems()) {
              using DbusRule = sdbus::Struct<uint32_t, std::vector<std::string>>;
-@@ -267,7 +267,7 @@ sdbus::MethodReply Goal::get_transaction_problems(sdbus::MethodCall & call) {
+@@ -274,7 +274,7 @@ sdbus::MethodReply Goal::get_transaction_problems(sdbus::MethodCall & call) {
                  }
                  dbus_problems.push_back(std::move(dbus_problem));
              }
@@ -408,10 +408,10 @@ index 27e6d7931..c9ff03fc6 100644
  
      auto reply = call.createReply();
 diff --git a/dnf5daemon-server/session.cpp b/dnf5daemon-server/session.cpp
-index 8b254d515..5bfec9a74 100644
+index e53635218..2ff8ffea5 100644
 --- a/dnf5daemon-server/session.cpp
 +++ b/dnf5daemon-server/session.cpp
-@@ -260,7 +260,7 @@ bool Session::check_authorization(
+@@ -272,7 +272,7 @@ bool Session::check_authorization(
  
      // call CheckAuthorization method
      sdbus::Struct<bool, bool, std::map<std::string, std::string>> auth_result;

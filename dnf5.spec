@@ -13,8 +13,8 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.2.6.2
-Release: %{?snapshot:0.%{snapshot}.}4
+Version: 5.2.8.1
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -111,15 +111,14 @@ Provides: dnf5-command(provides)
 %patchlist
 dnf5-znver1.patch
 dnf5-distro-release.patch
-dnf5-swig-4.3.patch
 # sdbus-cpp 2.0 support from
 # https://github.com/rpm-software-management/dnf5/tree/mblaha/sdbus-cpp-2
-https://github.com/rpm-software-management/dnf5/commit/4056e9b21c9001fd7deff8533cbaf5aa53420a0a.patch
-https://github.com/rpm-software-management/dnf5/commit/387e9609d049f1640ec9e10244e40d46028a845f.patch
-https://github.com/rpm-software-management/dnf5/commit/57e8204dcef5fc5496c437b5f5dc4218910cf4df.patch
-https://github.com/rpm-software-management/dnf5/commit/64bd108259bb662eb527dd25256f16803a67f581.patch
-https://github.com/rpm-software-management/dnf5/commit/d2347ff2586e457aeaaccfec63d447e5840b671c.patch
-https://github.com/rpm-software-management/dnf5/commit/f4dfaf160ffa61b2f1f889d6c7b6f04b59fbb97c.patch
+https://github.com/rpm-software-management/dnf5/commit/14ee0833269e3cb26c7969adbbfe182b22d2de9f.patch
+https://github.com/rpm-software-management/dnf5/commit/fa191fa8221717ce6c9ba1a9d76312a15d7a30ca.patch
+https://github.com/rpm-software-management/dnf5/commit/316abd1f3e736963d3beee9d0dac4f9e96ff1404.patch
+https://github.com/rpm-software-management/dnf5/commit/c6cb05962b3d3c48492b7f3278c78b95d3bd7a13.patch
+https://github.com/rpm-software-management/dnf5/commit/40c84f509969f9e8ac38e9fd659de057b4dd0647.patch
+https://github.com/rpm-software-management/dnf5/commit/8f137a9b8b24a2e4dbc6fd617acb70f1a7885abb.patch
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
@@ -267,6 +266,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %find_lang dnf5-plugin-copr
 %find_lang dnf5-plugin-needs-restarting
 %find_lang dnf5-plugin-repoclosure
+%find_lang dnf5-plugin-reposync
 %find_lang dnf5daemon-client
 %find_lang dnf5daemon-server
 %find_lang libdnf5
@@ -282,7 +282,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %postun -n dnf5daemon-server
 %systemd_postun_with_restart dnf5daemon-server.service
 
-%files -f dnf5.lang -f dnf5-plugin-builddep.lang -f dnf5-plugin-changelog.lang -f dnf5-plugin-config-manager.lang -f dnf5-plugin-copr.lang -f dnf5-plugin-needs-restarting.lang -f dnf5-plugin-repoclosure.lang -f libdnf5-plugin-actions.lang
+%files -f dnf5.lang -f dnf5-plugin-builddep.lang -f dnf5-plugin-changelog.lang -f dnf5-plugin-config-manager.lang -f dnf5-plugin-copr.lang -f dnf5-plugin-needs-restarting.lang -f dnf5-plugin-repoclosure.lang -f libdnf5-plugin-actions.lang -f dnf5-plugin-reposync.lang
 %dir %{_sysconfdir}/dnf
 %dir %{_sysconfdir}/dnf/dnf5-aliases.d
 %doc %{_sysconfdir}/dnf/dnf5-aliases.d/README
@@ -290,6 +290,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %dir %{_datadir}/dnf5/aliases.d
 %dir %{_datadir}/dnf5/dnf5-plugins
 %config %{_datadir}/dnf5/aliases.d/compatibility-plugins.conf
+%config %{_datadir}/dnf5/aliases.d/compatibility-reposync.conf
 %config %{_datadir}/dnf5/aliases.d/compatibility.conf
 %{_bindir}/dnf5
 %{_bindir}/microdnf
@@ -337,6 +338,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-repo.8*
 %doc %{_mandir}/man8/dnf5-repoclosure.8*
 %doc %{_mandir}/man8/dnf5-repoquery.8*
+%doc %{_mandir}/man8/dnf5-reposync.8*
 %doc %{_mandir}/man8/dnf5-search.8*
 %doc %{_mandir}/man8/dnf5-swap.8*
 %doc %{_mandir}/man8/dnf5-upgrade.8*
@@ -358,6 +360,8 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_prefix}/lib/systemd/system/dnf-automatic.timer
 %{_prefix}/lib/systemd/system/dnf5-automatic.service
 %{_prefix}/lib/systemd/system/dnf5-automatic.timer
+%{_prefix}/lib/systemd/system/dnf5-makecache.service
+%{_prefix}/lib/systemd/system/dnf5-makecache.timer
 %{_prefix}/lib/systemd/system/dnf5-offline-transaction-cleanup.service
 %{_prefix}/lib/systemd/system/dnf5-offline-transaction.service
 %{_datadir}/dnf5/dnf5-plugins/automatic.conf
@@ -393,6 +397,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_includedir}/libdnf5-cli
 %{_includedir}/libdnf5
 %dir %{_includedir}/dnf5
+%{_includedir}/dnf5/*.h
 %{_includedir}/dnf5/*.hpp
 %{_libdir}/libdnf5-cli.so
 %{_libdir}/libdnf5.so

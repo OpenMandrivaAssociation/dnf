@@ -1,4 +1,4 @@
-From d2347ff2586e457aeaaccfec63d447e5840b671c Mon Sep 17 00:00:00 2001
+From fa191fa8221717ce6c9ba1a9d76312a15d7a30ca Mon Sep 17 00:00:00 2001
 From: Marek Blaha <mblaha@redhat.com>
 Date: Fri, 17 May 2024 13:05:09 +0200
 Subject: [PATCH] dnfdaemon: Make signal handlers compatible
@@ -10,7 +10,7 @@ sdbus-cpp version 2 requires signal handler to have signature
  1 file changed, 24 insertions(+), 24 deletions(-)
 
 diff --git a/dnf5daemon-client/callbacks.cpp b/dnf5daemon-client/callbacks.cpp
-index 467dcf853..9debaf8b5 100644
+index c0379d282..98b7d6a81 100644
 --- a/dnf5daemon-client/callbacks.cpp
 +++ b/dnf5daemon-client/callbacks.cpp
 @@ -46,23 +46,23 @@ DownloadCB::DownloadCB(Context & context) : DbusCallback(context) {
@@ -42,7 +42,7 @@ index 467dcf853..9debaf8b5 100644
              this->key_import(signal);
          });
  }
-@@ -243,55 +243,55 @@ TransactionCB::TransactionCB(Context & context) : DbusCallback(context) {
+@@ -242,55 +242,55 @@ TransactionCB::TransactionCB(Context & context) : DbusCallback(context) {
      // register signal handlers
      auto proxy = context.session_proxy.get();
      proxy->registerSignalHandler(

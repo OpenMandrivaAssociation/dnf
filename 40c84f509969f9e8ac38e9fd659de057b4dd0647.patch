@@ -1,31 +1,7 @@
-From 387e9609d049f1640ec9e10244e40d46028a845f Mon Sep 17 00:00:00 2001
-From: Marek Blaha <mblaha@redhat.com>
-Date: Fri, 7 Jun 2024 11:52:55 +0200
-Subject: [PATCH] dnfdaemon: sdbus-cpp v. 2 requires strong types
-
-- Use InterfaceName type instead of char * for interface names
-- Use SignalName type instead of char * for signal names
-- Use ServiceName instead of char * for bus names
-- Use Error::Name type instead of char * for errors
----
- .../needs_restarting.cpp                      |  9 +-
- dnf5/commands/offline/offline.cpp             |  9 +-
- dnf5daemon-server/callbacks.cpp               |  9 +-
- dnf5daemon-server/callbacks.hpp               | 11 ++-
- dnf5daemon-server/dbus.hpp                    | 83 ++++++++++---------
- dnf5daemon-server/services/rpm/rpm.cpp        |  3 +-
- dnf5daemon-server/session.cpp                 | 10 +--
- dnf5daemon-server/session.hpp                 |  6 +-
- dnf5daemon-server/session_manager.cpp         |  5 +-
- include/libdnf5/sdbus_compat.hpp              | 39 +++++++++
- 10 files changed, 118 insertions(+), 66 deletions(-)
- create mode 100644 include/libdnf5/sdbus_compat.hpp
-
-diff --git a/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp b/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
-index e8f695bae..6d9de330c 100644
---- a/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
-+++ b/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
-@@ -25,6 +25,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
+diff -up dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp.7~ dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
+--- dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp.7~	2025-01-01 04:45:44.811880197 +0100
++++ dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp	2025-01-01 04:45:44.823163659 +0100
+@@ -25,6 +25,7 @@ along with libdnf.  If not, see <https:/
  #include <libdnf5/conf/option_string.hpp>
  #include <libdnf5/rpm/package.hpp>
  #include <libdnf5/rpm/package_query.hpp>
@@ -33,7 +9,7 @@ index e8f695bae..6d9de330c 100644
  #include <libdnf5/utils/bgettext/bgettext-mark-domain.h>
  #include <utils/string.hpp>
  
-@@ -33,10 +34,10 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
+@@ -33,10 +34,10 @@ along with libdnf.  If not, see <https:/
  #include <iostream>
  #include <vector>
  
@@ -48,11 +24,10 @@ index e8f695bae..6d9de330c 100644
  
  namespace dnf5 {
  
-diff --git a/dnf5/commands/offline/offline.cpp b/dnf5/commands/offline/offline.cpp
-index c27da7045..18798ead1 100644
---- a/dnf5/commands/offline/offline.cpp
-+++ b/dnf5/commands/offline/offline.cpp
-@@ -29,6 +29,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
+diff -up dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp.7~ dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp
+--- dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp.7~	2025-01-01 04:45:44.811978623 +0100
++++ dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp	2025-01-01 04:45:44.823247206 +0100
+@@ -29,6 +29,7 @@ along with libdnf.  If not, see <https:/
  #include <libdnf5/base/goal.hpp>
  #include <libdnf5/conf/const.hpp>
  #include <libdnf5/conf/option_path.hpp>
@@ -75,11 +50,10 @@ index c27da7045..18798ead1 100644
  const std::string SYSTEMD_SERVICE_NAME{"dnf5-offline-transaction.service"};
  
  int call(const std::string & command, const std::vector<std::string> & args) {
-diff --git a/dnf5daemon-server/callbacks.cpp b/dnf5daemon-server/callbacks.cpp
-index cefb93974..aa0ebb7ee 100644
---- a/dnf5daemon-server/callbacks.cpp
-+++ b/dnf5daemon-server/callbacks.cpp
-@@ -35,7 +35,8 @@ DbusCallback::DbusCallback(Session & session) : session(session) {
+diff -up dnf5-5.2.8.1/dnf5daemon-server/callbacks.cpp.7~ dnf5-5.2.8.1/dnf5daemon-server/callbacks.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/callbacks.cpp.7~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/callbacks.cpp	2025-01-01 04:45:44.823315205 +0100
+@@ -35,7 +35,8 @@ DbusCallback::DbusCallback(Session & ses
      dbus_object = session.get_dbus_object();
  }
  
@@ -89,7 +63,7 @@ index cefb93974..aa0ebb7ee 100644
      auto signal = dbus_object->createSignal(interface, signal_name);
      signal.setDestination(session.get_sender());
      signal << session.get_object_path();
-@@ -45,7 +46,7 @@ sdbus::Signal DbusCallback::create_signal(std::string interface, std::string sig
+@@ -45,7 +46,7 @@ sdbus::Signal DbusCallback::create_signa
  std::chrono::time_point<std::chrono::steady_clock> DbusCallback::prev_print_time = std::chrono::steady_clock::now();
  
  
@@ -98,7 +72,7 @@ index cefb93974..aa0ebb7ee 100644
      auto signal = create_signal(dnfdaemon::INTERFACE_BASE, signal_name);
      if (user_data) {
          auto * data = reinterpret_cast<DownloadUserData *>(user_data);
-@@ -121,7 +122,9 @@ bool KeyImportRepoCB::repokey_import(const libdnf5::rpm::KeyInfo & key_info) {
+@@ -121,7 +122,9 @@ bool KeyImportRepoCB::repokey_import(con
  
  
  sdbus::Signal DbusTransactionCB::create_signal_pkg(
@@ -109,11 +83,10 @@ index cefb93974..aa0ebb7ee 100644
      auto signal = create_signal(interface, signal_name);
      signal << nevra;
      return signal;
-diff --git a/dnf5daemon-server/callbacks.hpp b/dnf5daemon-server/callbacks.hpp
-index fab052e4d..1d5f31f77 100644
---- a/dnf5daemon-server/callbacks.hpp
-+++ b/dnf5daemon-server/callbacks.hpp
-@@ -25,6 +25,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
+diff -up dnf5-5.2.8.1/dnf5daemon-server/callbacks.hpp.7~ dnf5-5.2.8.1/dnf5daemon-server/callbacks.hpp
+--- dnf5-5.2.8.1/dnf5daemon-server/callbacks.hpp.7~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/callbacks.hpp	2025-01-01 04:45:44.823361262 +0100
+@@ -25,6 +25,7 @@ along with libdnf.  If not, see <https:/
  #include <libdnf5/repo/repo_callbacks.hpp>
  #include <libdnf5/rpm/rpm_signature.hpp>
  #include <libdnf5/rpm/transaction_callbacks.hpp>
@@ -121,7 +94,7 @@ index fab052e4d..1d5f31f77 100644
  #include <sdbus-c++/sdbus-c++.h>
  
  #include <chrono>
-@@ -49,7 +50,8 @@ class DbusCallback {
+@@ -49,7 +50,8 @@ protected:
      Session & session;
      sdbus::IObject * dbus_object;
  
@@ -131,7 +104,7 @@ index fab052e4d..1d5f31f77 100644
      static bool is_time_to_print() {
          auto now = std::chrono::steady_clock::now();
          auto delta = now - prev_print_time;
-@@ -76,7 +78,7 @@ class DownloadCB : public DbusCallback, public libdnf5::repo::DownloadCallbacks
+@@ -76,7 +78,7 @@ public:
      int mirror_failure(void * user_cb_data, const char * msg, const char * url, const char * metadata) override;
  
  private:
@@ -140,7 +113,7 @@ index fab052e4d..1d5f31f77 100644
  };
  
  
-@@ -146,7 +148,10 @@ class DbusTransactionCB : public libdnf5::rpm::TransactionCallbacks, public Dbus
+@@ -146,7 +148,10 @@ public:
      void finish();
  
  private:
@@ -152,11 +125,10 @@ index fab052e4d..1d5f31f77 100644
  };
  
  }  // namespace dnf5daemon
-diff --git a/dnf5daemon-server/dbus.hpp b/dnf5daemon-server/dbus.hpp
-index 61482b90e..68df8db15 100644
---- a/dnf5daemon-server/dbus.hpp
-+++ b/dnf5daemon-server/dbus.hpp
-@@ -20,6 +20,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
+diff -up dnf5-5.2.8.1/dnf5daemon-server/dbus.hpp.7~ dnf5-5.2.8.1/dnf5daemon-server/dbus.hpp
+--- dnf5-5.2.8.1/dnf5daemon-server/dbus.hpp.7~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/dbus.hpp	2025-01-01 04:45:44.823415784 +0100
+@@ -20,6 +20,7 @@ along with libdnf.  If not, see <https:/
  #ifndef DNF5DAEMON_SERVER_DBUS_HPP
  #define DNF5DAEMON_SERVER_DBUS_HPP
  
@@ -164,7 +136,7 @@ index 61482b90e..68df8db15 100644
  #include <sdbus-c++/sdbus-c++.h>
  
  #include <map>
-@@ -51,46 +52,46 @@ using AdvisoryReference = sdbus::Struct<std::string, std::string, std::string, s
+@@ -51,46 +52,46 @@ using AdvisoryReference = sdbus::Struct<
  
  // constants
  
@@ -216,8 +188,6 @@ index 61482b90e..68df8db15 100644
 -const char * const SIGNAL_TRANSACTION_UNPACK_ERROR = "transaction_unpack_error";
 -const char * const SIGNAL_TRANSACTION_ELEM_PROGRESS = "transaction_elem_progress";
 -const char * const SIGNAL_TRANSACTION_FINISHED = "transaction_finished";
--
--const char * const SIGNAL_WRITE_TO_FD_FINISHED = "write_to_fd_finished";
 +const SDBUS_SIGNAL_NAME_TYPE SIGNAL_DOWNLOAD_ADD_NEW{"download_add_new"};
 +const SDBUS_SIGNAL_NAME_TYPE SIGNAL_DOWNLOAD_PROGRESS{"download_progress"};
 +const SDBUS_SIGNAL_NAME_TYPE SIGNAL_DOWNLOAD_END{"download_end"};
@@ -242,12 +212,13 @@ index 61482b90e..68df8db15 100644
 +const SDBUS_SIGNAL_NAME_TYPE SIGNAL_TRANSACTION_UNPACK_ERROR{"transaction_unpack_error"};
 +const SDBUS_SIGNAL_NAME_TYPE SIGNAL_TRANSACTION_ELEM_PROGRESS{"transaction_elem_progress"};
 +const SDBUS_SIGNAL_NAME_TYPE SIGNAL_TRANSACTION_FINISHED{"transaction_finished"};
-+
+ 
+-const char * const SIGNAL_WRITE_TO_FD_FINISHED = "write_to_fd_finished";
 +const SDBUS_SIGNAL_NAME_TYPE SIGNAL_WRITE_TO_FD_FINISHED{"write_to_fd_finished"};
  
  // polkit actions
  const char * const POLKIT_REPOCONF_WRITE = "org.rpm.dnf.v0.rpm.Repo.conf_write";
-@@ -99,11 +100,11 @@ const char * const POLKIT_CONFIRM_KEY_IMPORT = "org.rpm.dnf.v0.rpm.Repo.confirm_
+@@ -99,11 +100,11 @@ const char * const POLKIT_CONFIRM_KEY_IM
  const char * const POLKIT_CONFIG_OVERRIDE = "org.rpm.dnf.v0.base.Config.override";
  
  // errors
@@ -264,11 +235,10 @@ index 61482b90e..68df8db15 100644
  
  }  // namespace dnfdaemon
  
-diff --git a/dnf5daemon-server/services/rpm/rpm.cpp b/dnf5daemon-server/services/rpm/rpm.cpp
-index 2a8ff695c..83cf253e5 100644
---- a/dnf5daemon-server/services/rpm/rpm.cpp
-+++ b/dnf5daemon-server/services/rpm/rpm.cpp
-@@ -467,7 +467,8 @@ void Rpm::list_fd(sdbus::MethodCall & call, const std::string & transfer_id) {
+diff -up dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp.7~ dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp.7~	2025-01-01 04:45:44.801594428 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/services/rpm/rpm.cpp	2025-01-01 04:45:44.823479334 +0100
+@@ -645,7 +645,8 @@ void Rpm::list_fd(sdbus::MethodCall & ca
  
      // signal client that the transfer has finished and the output file descriptor is closed
      auto dbus_object = get_session().get_dbus_object();
@@ -278,12 +248,11 @@ index 2a8ff695c..83cf253e5 100644
      signal << error_msg.empty();
      signal << transfer_id;
      signal << error_msg;
-diff --git a/dnf5daemon-server/session.cpp b/dnf5daemon-server/session.cpp
-index 7ecc01ec6..8b254d515 100644
---- a/dnf5daemon-server/session.cpp
-+++ b/dnf5daemon-server/session.cpp
-@@ -75,8 +75,8 @@ Session::Session(
-     std::vector<std::unique_ptr<libdnf5::Logger>> && loggers,
+diff -up dnf5-5.2.8.1/dnf5daemon-server/session.cpp.7~ dnf5-5.2.8.1/dnf5daemon-server/session.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/session.cpp.7~	2025-01-01 04:45:44.818057809 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/session.cpp	2025-01-01 04:47:48.049462338 +0100
+@@ -133,8 +133,8 @@ void Session::setup_base() {
+ Session::Session(
      sdbus::IConnection & connection,
      dnfdaemon::KeyValueMap session_configuration,
 -    std::string object_path,
@@ -291,9 +260,9 @@ index 7ecc01ec6..8b254d515 100644
 +    const sdbus::ObjectPath & object_path,
 +    const std::string & sender)
      : connection(connection),
-       base(std::make_unique<libdnf5::Base>(std::move(loggers))),
-       goal(*base),
-@@ -252,9 +252,9 @@ bool Session::read_all_repos() {
+       session_configuration(session_configuration),
+       object_path(object_path),
+@@ -267,9 +267,9 @@ bool Session::read_all_repos() {
  bool Session::check_authorization(
      const std::string & actionid, const std::string & sender, bool allow_user_interaction) {
      // create proxy for PolicyKit1 object
@@ -304,14 +273,13 @@ index 7ecc01ec6..8b254d515 100644
 +    const sdbus::ObjectPath object_path{"/org/freedesktop/PolicyKit1/Authority"};
 +    const SDBUS_INTERFACE_NAME_TYPE interface_name{"org.freedesktop.PolicyKit1.Authority"};
      auto polkit_proxy = sdbus::createProxy(connection, destination_name, object_path);
+ #ifndef SDBUS_CPP_VERSION_2
      polkit_proxy->finishRegistration();
- 
-diff --git a/dnf5daemon-server/session.hpp b/dnf5daemon-server/session.hpp
-index 9d1637247..29e8e5039 100644
---- a/dnf5daemon-server/session.hpp
-+++ b/dnf5daemon-server/session.hpp
-@@ -57,8 +57,8 @@ class Session {
-         std::vector<std::unique_ptr<libdnf5::Logger>> && loggers,
+diff -up dnf5-5.2.8.1/dnf5daemon-server/session.hpp.7~ dnf5-5.2.8.1/dnf5daemon-server/session.hpp
+--- dnf5-5.2.8.1/dnf5daemon-server/session.hpp.7~	2024-12-05 21:31:02.000000000 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/session.hpp	2025-01-01 04:45:44.823624087 +0100
+@@ -56,8 +56,8 @@ public:
+     Session(
          sdbus::IConnection & connection,
          dnfdaemon::KeyValueMap session_configuration,
 -        std::string object_path,
@@ -321,7 +289,7 @@ index 9d1637247..29e8e5039 100644
      ~Session();
  
      template <typename ItemType>
-@@ -70,7 +70,7 @@ class Session {
+@@ -69,7 +69,7 @@ public:
          return dnfdaemon::key_value_map_get<ItemType>(session_configuration, key);
      }
  
@@ -330,21 +298,20 @@ index 9d1637247..29e8e5039 100644
      sdbus::IConnection & get_connection() { return connection; };
      libdnf5::Base * get_base() { return base.get(); };
      ThreadsManager & get_threads_manager() { return threads_manager; };
-diff --git a/dnf5daemon-server/session_manager.cpp b/dnf5daemon-server/session_manager.cpp
-index bdb404701..f5ea09356 100644
---- a/dnf5daemon-server/session_manager.cpp
-+++ b/dnf5daemon-server/session_manager.cpp
-@@ -70,7 +70,8 @@ void SessionManager::dbus_register() {
-     dbus_object->finishRegistration();
+diff -up dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp.7~ dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp
+--- dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp.7~	2025-01-01 04:45:44.801753618 +0100
++++ dnf5-5.2.8.1/dnf5daemon-server/session_manager.cpp	2025-01-01 04:48:48.797174770 +0100
+@@ -97,7 +97,8 @@ void SessionManager::dbus_register() {
+ #endif
  
      // register signal handler for NameOwnerChanged
 -    name_changed_proxy = sdbus::createProxy(*connection, "org.freedesktop.DBus", "/org/freedesktop/DBus");
 +    name_changed_proxy = sdbus::createProxy(
 +        *connection, SDBUS_SERVICE_NAME_TYPE{"org.freedesktop.DBus"}, sdbus::ObjectPath{"/org/freedesktop/DBus"});
      name_changed_proxy->registerSignalHandler(
-         "org.freedesktop.DBus", "NameOwnerChanged", [this](sdbus::Signal signal) -> void {
-             threads_manager.handle_signal(*this, &SessionManager::on_name_owner_changed, signal);
-@@ -130,7 +131,7 @@ sdbus::MethodReply SessionManager::open_session(sdbus::MethodCall & call) {
+         SDBUS_INTERFACE_NAME_TYPE{"org.freedesktop.DBus"},
+         SDBUS_SIGNAL_NAME_TYPE{"NameOwnerChanged"},
+@@ -161,7 +162,7 @@ sdbus::MethodReply SessionManager::open_
      call >> configuration;
  
      // generate UUID-like session id
@@ -352,12 +319,10 @@ index bdb404701..f5ea09356 100644
 +    const sdbus::ObjectPath sessionid{dnfdaemon::DBUS_OBJECT_PATH + std::string("/") + gen_session_id()};
      // store newly created session
      {
-         // create a vector of loggers with one logger
-diff --git a/include/libdnf5/sdbus_compat.hpp b/include/libdnf5/sdbus_compat.hpp
-new file mode 100644
-index 000000000..029182dd6
---- /dev/null
-+++ b/include/libdnf5/sdbus_compat.hpp
+         std::lock_guard<std::mutex> lock(sessions_mutex);
+diff -up dnf5-5.2.8.1/include/libdnf5/sdbus_compat.hpp.7~ dnf5-5.2.8.1/include/libdnf5/sdbus_compat.hpp
+--- dnf5-5.2.8.1/include/libdnf5/sdbus_compat.hpp.7~	2025-01-01 04:45:44.823731570 +0100
++++ dnf5-5.2.8.1/include/libdnf5/sdbus_compat.hpp	2025-01-01 04:45:44.823725969 +0100
 @@ -0,0 +1,39 @@
 +/*
 +Copyright Contributors to the libdnf project.

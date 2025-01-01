@@ -1,4 +1,4 @@
-From 4056e9b21c9001fd7deff8533cbaf5aa53420a0a Mon Sep 17 00:00:00 2001
+From 8f137a9b8b24a2e4dbc6fd617acb70f1a7885abb Mon Sep 17 00:00:00 2001
 From: Marek Blaha <mblaha@redhat.com>
 Date: Fri, 17 May 2024 12:11:06 +0200
 Subject: [PATCH] cmake: Move sdbus-c++ check to one place
@@ -7,21 +7,20 @@ Also set SDBUS_CPP_VERSION_2 macro in case sdbus-c++ was found in
 version 2. This enables conditional compilation according the version of
 the library found.
 ---
- cmake/sdbus_cpp.cmake                               | 11 +++++++++++
+ cmake/sdbus_cpp.cmake                               | 10 ++++++++++
  dnf5-plugins/needs_restarting_plugin/CMakeLists.txt |  2 +-
  dnf5/CMakeLists.txt                                 |  2 +-
  dnf5daemon-client/CMakeLists.txt                    |  3 +--
  dnf5daemon-server/CMakeLists.txt                    |  2 +-
- 5 files changed, 15 insertions(+), 5 deletions(-)
+ 5 files changed, 14 insertions(+), 5 deletions(-)
  create mode 100644 cmake/sdbus_cpp.cmake
 
 diff --git a/cmake/sdbus_cpp.cmake b/cmake/sdbus_cpp.cmake
 new file mode 100644
-index 000000000..914b20f2b
+index 000000000..77aced9ed
 --- /dev/null
 +++ b/cmake/sdbus_cpp.cmake
-@@ -0,0 +1,11 @@
-+
+@@ -0,0 +1,10 @@
 +# Attempt to find sdbus-c++ version 2 (preferred)
 +pkg_check_modules(SDBUS_CPP REQUIRED sdbus-c++>=1)
 +

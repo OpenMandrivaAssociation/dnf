@@ -1,4 +1,4 @@
-From 8f137a9b8b24a2e4dbc6fd617acb70f1a7885abb Mon Sep 17 00:00:00 2001
+From 1e1a0627a5102f13f5e4515823ef2305bd4e9763 Mon Sep 17 00:00:00 2001
 From: Marek Blaha <mblaha@redhat.com>
 Date: Fri, 17 May 2024 12:11:06 +0200
 Subject: [PATCH] cmake: Move sdbus-c++ check to one place
@@ -45,7 +45,7 @@ index 651d9f3d0..cf290146e 100644
  target_link_libraries(needs_restarting_cmd_plugin PRIVATE dnf5 libdnf5 libdnf5-cli ${SDBUS_CPP_LIBRARIES})
  
 diff --git a/dnf5/CMakeLists.txt b/dnf5/CMakeLists.txt
-index 6ef8c67c8..05696137a 100644
+index c127f6265..d1438d300 100644
 --- a/dnf5/CMakeLists.txt
 +++ b/dnf5/CMakeLists.txt
 @@ -45,7 +45,7 @@ install(TARGETS dnf5 RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -58,7 +58,7 @@ index 6ef8c67c8..05696137a 100644
    add_definitions(-DWITH_SYSTEMD)
    target_link_libraries(dnf5 PRIVATE ${RPM_LIBRARIES} ${SDBUS_CPP_LIBRARIES} ${LIBSYSTEMD_LIBRARIES})
 diff --git a/dnf5daemon-client/CMakeLists.txt b/dnf5daemon-client/CMakeLists.txt
-index aa824d715..142076e09 100644
+index 79e4cb41a..195a825f6 100644
 --- a/dnf5daemon-client/CMakeLists.txt
 +++ b/dnf5daemon-client/CMakeLists.txt
 @@ -13,8 +13,7 @@ include_directories(.)
@@ -72,7 +72,7 @@ index aa824d715..142076e09 100644
  include_directories(${JSONC_INCLUDE_DIRS})
  
 diff --git a/dnf5daemon-server/CMakeLists.txt b/dnf5daemon-server/CMakeLists.txt
-index caeee223a..2897404c0 100644
+index d683a09a8..3cfc65c3a 100644
 --- a/dnf5daemon-server/CMakeLists.txt
 +++ b/dnf5daemon-server/CMakeLists.txt
 @@ -12,7 +12,7 @@ add_definitions(-DGETTEXT_DOMAIN=\"${GETTEXT_DOMAIN}\")

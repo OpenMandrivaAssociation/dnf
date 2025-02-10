@@ -1,0 +1,15 @@
+diff -up dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf.omv~ dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf
+--- dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf.omv~	2025-02-10 12:26:47.075097542 +0100
++++ dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf	2025-02-10 12:27:43.068024119 +0100
+@@ -69,6 +69,11 @@ long_name = 'disableplugin'
+ source = 'disable-plugin'
+ group_id = 'options-compatibility-aliases'
+ 
++['ref']
++type = 'cloned_named_arg'
++long_name = 'ref'
++source = 'refresh'
++group_id = 'options-compatibility-aliases'
+ 
+ ########################################
+ # Commands compatibility aliases

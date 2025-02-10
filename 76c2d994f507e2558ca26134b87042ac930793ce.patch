@@ -1,0 +1,41 @@
+From 76c2d994f507e2558ca26134b87042ac930793ce Mon Sep 17 00:00:00 2001
+From: Jaroslav Rohel <jrohel@redhat.com>
+Date: Thu, 23 Jan 2025 13:03:05 +0100
+Subject: [PATCH] DNF5 bash completion: "menu completion" support
+
+"Menu completion" cyclically completes the suggestions from the list.
+We don't want to add a description to the added argument -> We need
+a list of suggestions without descriptions.
+
+"Normal completion" completes an identical part of the suggestions.
+The added description is not printed. -> Descriptions can be
+in the suggestion list, but will not be used. We can optimize the code
+and not add the descriptions to the list.
+---
+ dnf5/bash-completion/dnf5 | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/dnf5/bash-completion/dnf5 b/dnf5/bash-completion/dnf5
+index 1d322d7ba..00706a0f7 100644
+--- a/dnf5/bash-completion/dnf5
++++ b/dnf5/bash-completion/dnf5
+@@ -13,7 +13,18 @@ _do_dnf5_completion()
+         _init_completion -n "><=;|&(:" -- "$@" || return
+     fi
+ 
+-    mapfile -t COMPREPLY <<<$("${1}" "--complete=${cword}" "${words[@]}")
++    case ${COMP_TYPE} in
++        # <TAB> (code 9) - normal completion, the identical part of the suggestions is completed
++        # '%' (code 37) - menu completion, cyclically completes the suggestions from the list
++        # In these cases the list of suggestions is not printed and we do not want
++        # to complete the argument with a description (help).
++        9 | 37)
++            mapfile -t COMPREPLY <<<$("${1}" "--complete=${cword},add_description=0" "${words[@]}")
++            ;;
++        *)
++            mapfile -t COMPREPLY <<<$("${1}" "--complete=${cword}" "${words[@]}")
++            ;;
++    esac
+ 
+     # In Bash, with a colon in COMP_WORDBREAKS, words containing colons are
+     # always completed as entire words if the word to complete contains a colon.

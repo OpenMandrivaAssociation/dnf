@@ -13,7 +13,7 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.2.8.1
+Version: 5.2.10.0
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -111,14 +111,22 @@ Provides: dnf5-command(provides)
 %patchlist
 dnf5-znver1.patch
 dnf5-distro-release.patch
-# sdbus-cpp 2.0 support from
-# https://github.com/rpm-software-management/dnf5/tree/mblaha/sdbus-cpp-2
-https://github.com/rpm-software-management/dnf5/commit/14ee0833269e3cb26c7969adbbfe182b22d2de9f.patch
-https://github.com/rpm-software-management/dnf5/commit/fa191fa8221717ce6c9ba1a9d76312a15d7a30ca.patch
-https://github.com/rpm-software-management/dnf5/commit/316abd1f3e736963d3beee9d0dac4f9e96ff1404.patch
-https://github.com/rpm-software-management/dnf5/commit/c6cb05962b3d3c48492b7f3278c78b95d3bd7a13.patch
-https://github.com/rpm-software-management/dnf5/commit/40c84f509969f9e8ac38e9fd659de057b4dd0647.patch
-https://github.com/rpm-software-management/dnf5/commit/8f137a9b8b24a2e4dbc6fd617acb70f1a7885abb.patch
+# Bring back dnf 4.x's --ref shortcut (meaning --refresh)
+dnf5-ref.patch
+# sdbus-cpp 2.0 support from master branch
+https://github.com/rpm-software-management/dnf5/commit/1e1a0627a5102f13f5e4515823ef2305bd4e9763.patch
+https://github.com/rpm-software-management/dnf5/commit/cdf99383de790a1c7497f297094c156b9b862d86.patch
+https://github.com/rpm-software-management/dnf5/commit/af00463e6449f796dad0e4a4da2cb86a6373eb72.patch
+https://github.com/rpm-software-management/dnf5/commit/4714a43af45942a033caff85b8b1d5d9983c7035.patch
+https://github.com/rpm-software-management/dnf5/commit/270094934dc6ecfce6136eb24c872757723c42ea.patch
+https://github.com/rpm-software-management/dnf5/commit/fb9cea1132b03fc22439d0e3f0d38e5240697ea7.patch
+https://github.com/rpm-software-management/dnf5/commit/c5df756b2e1a5c82801a24b9a296e5881ec80a70.patch
+https://github.com/rpm-software-management/dnf5/commit/60e5a6bbf4172079fb72aadbc3021a3de3cf937e.patch
+https://github.com/rpm-software-management/dnf5/commit/4eb8ef299690ab4795f73d06bdf5883dc0a34f02.patch
+# Other relevant patches from master
+https://github.com/rpm-software-management/dnf5/commit/ec6c1d829ab19cfb40b3b1c58d419c8fdef56b0c.patch
+https://github.com/rpm-software-management/dnf5/commit/282d0c60ddcf39b813c2bc8de9482bfe69c84866.patch
+https://github.com/rpm-software-management/dnf5/commit/76c2d994f507e2558ca26134b87042ac930793ce.patch
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
@@ -135,6 +143,24 @@ Provides: dnf5-command(automatic)
 Alternative CLI to dnf upgrade with specific facilities to make it suitable
 to be executed automatically and regularly from systemd timers, cron jobs
 and similar.
+
+%package plugin-appstream
+Summary: dnf5 plugin for handling appstream metadata
+Group: System
+Requires: %{name} = %{EVRD}
+Provides: dnf5-command(appstream)
+
+%description plugin-appstream
+DNF plugin for handling appstream metadata
+
+%package plugin-expired-pgp-keys
+Summary: dnf5 plugin for detecting expired pgp keys
+Group: System
+Requires: %{name} = %{EVRD}
+Provides: dnf5-command(expired-pgp-keys)
+
+%description plugin-expired-pgp-keys
+DNF plugin for detecting expired pgp keys
 
 %package -n %{libname}
 Summary: Package management library
@@ -272,6 +298,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %find_lang libdnf5
 %find_lang libdnf5-cli
 %find_lang libdnf5-plugin-actions
+%find_lang libdnf5-plugin-expired-pgp-keys
 
 %post -n dnf5daemon-server
 %systemd_post dnf5daemon-server.service
@@ -366,6 +393,15 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_prefix}/lib/systemd/system/dnf5-offline-transaction.service
 %{_datadir}/dnf5/dnf5-plugins/automatic.conf
 %doc %{_mandir}/man8/dnf5-automatic.8*
+
+%files plugin-appstream
+%config %{_sysconfdir}/dnf/libdnf5-plugins/appstream.conf
+%{_libdir}/libdnf5/plugins/appstream.so
+
+%files plugin-expired-pgp-keys -f libdnf5-plugin-expired-pgp-keys.lang
+%config %{_sysconfdir}/dnf/libdnf5-plugins/expired-pgp-keys.conf
+%{_libdir}/libdnf5/plugins/expired-pgp-keys.so
+%{_mandir}/man8/libdnf5-expired-pgp-keys.8*
 
 %files -n %{libname} -f libdnf5.lang
 %if %{with dnf5_default}

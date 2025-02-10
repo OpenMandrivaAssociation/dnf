@@ -1,4 +1,4 @@
-From fa191fa8221717ce6c9ba1a9d76312a15d7a30ca Mon Sep 17 00:00:00 2001
+From 270094934dc6ecfce6136eb24c872757723c42ea Mon Sep 17 00:00:00 2001
 From: Marek Blaha <mblaha@redhat.com>
 Date: Fri, 17 May 2024 13:05:09 +0200
 Subject: [PATCH] dnfdaemon: Make signal handlers compatible

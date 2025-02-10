@@ -1,0 +1,31 @@
+From c5df756b2e1a5c82801a24b9a296e5881ec80a70 Mon Sep 17 00:00:00 2001
+From: Marek Blaha <mblaha@redhat.com>
+Date: Thu, 2 Jan 2025 14:38:41 +0100
+Subject: [PATCH] dnfdaemon-client: Use correct data type for callbacks
+
+---
+ dnf5daemon-client/callbacks.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/dnf5daemon-client/callbacks.cpp b/dnf5daemon-client/callbacks.cpp
+index 98b7d6a81..056c0009a 100644
+--- a/dnf5daemon-client/callbacks.cpp
++++ b/dnf5daemon-client/callbacks.cpp
+@@ -134,7 +134,7 @@ void DownloadCB::end(sdbus::Signal & signal) {
+             return;
+         }
+ 
+-        int status_i;
++        unsigned int status_i;
+         std::string msg;
+         signal >> status_i;
+         signal >> msg;
+@@ -364,7 +364,7 @@ void TransactionCB::transaction_end(sdbus::Signal & signal) {
+ void TransactionCB::action_start(sdbus::Signal & signal) {
+     if (signature_valid(signal)) {
+         std::string nevra;
+-        int action_i;
++        unsigned int action_i;
+         uint64_t total;
+         signal >> nevra;
+         signal >> action_i;

@@ -1,7 +1,29 @@
-diff -up dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp.5~ dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
---- dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp	2025-01-01 04:36:29.856044943 +0100
-@@ -118,8 +118,8 @@ time_t NeedsRestartingCommand::get_boot_
+From 4714a43af45942a033caff85b8b1d5d9983c7035 Mon Sep 17 00:00:00 2001
+From: Marek Blaha <mblaha@redhat.com>
+Date: Fri, 17 May 2024 13:03:42 +0200
+Subject: [PATCH] dnfdaemon: Explicit sdbus::Variant conversion
+
+In version 2, conversion of sdbus::Variant to the underlying type is
+explicit.
+---
+ .../needs_restarting.cpp                      |  6 +--
+ dnf5/commands/offline/offline.cpp             |  3 +-
+ .../wrappers/dbus_advisory_wrapper.hpp        | 44 ++++++++--------
+ .../wrappers/dbus_environment_wrapper.cpp     |  2 +-
+ .../wrappers/dbus_environment_wrapper.hpp     |  9 ++--
+ .../wrappers/dbus_goal_wrapper.cpp            |  2 +-
+ .../wrappers/dbus_group_wrapper.cpp           |  4 +-
+ .../wrappers/dbus_group_wrapper.hpp           | 16 +++---
+ .../wrappers/dbus_package_wrapper.hpp         | 42 +++++++--------
+ .../wrappers/dbus_repo_wrapper.cpp            |  2 +-
+ .../wrappers/dbus_repo_wrapper.hpp            | 52 +++++++++----------
+ 11 files changed, 92 insertions(+), 90 deletions(-)
+
+diff --git a/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp b/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
+index 6d9de330c..846a95f5f 100644
+--- a/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
++++ b/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp
+@@ -119,8 +119,8 @@ time_t NeedsRestartingCommand::get_boot_time(Context & ctx) {
          connection = sdbus::createSystemBusConnection();
          auto proxy = sdbus::createProxy(SYSTEMD_DESTINATION_NAME, SYSTEMD_OBJECT_PATH);
  
@@ -12,7 +34,7 @@ diff -up dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp.
  
          const time_t systemd_boot_time = static_cast<long>(systemd_boot_time_us) / (1000L * 1000L);
  
-@@ -274,7 +274,7 @@ void NeedsRestartingCommand::services_ne
+@@ -275,7 +275,7 @@ void NeedsRestartingCommand::services_need_restarting(Context & ctx) {
          // FragmentPath is the path to the unit file that defines the service
          const auto fragment_path = unit_proxy->getProperty("FragmentPath").onInterface(SYSTEMD_UNIT_INTERFACE);
          const auto start_timestamp_us =
@@ -21,10 +43,11 @@ diff -up dnf5-5.2.8.1/dnf5-plugins/needs_restarting_plugin/needs_restarting.cpp.
  
          unit_file_to_service.insert(std::make_pair(fragment_path, Service{unit_name, start_timestamp_us}));
      }
-diff -up dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp.5~ dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp
---- dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp	2025-01-01 04:36:29.856139812 +0100
-@@ -321,7 +321,8 @@ void OfflineRebootCommand::run() {
+diff --git a/dnf5/commands/offline/offline.cpp b/dnf5/commands/offline/offline.cpp
+index fa1240e29..eb937c0f3 100644
+--- a/dnf5/commands/offline/offline.cpp
++++ b/dnf5/commands/offline/offline.cpp
+@@ -322,7 +322,8 @@ void OfflineRebootCommand::run() {
              .storeResultsTo(unit_object_path);
  
          auto unit_proxy = sdbus::createProxy(SYSTEMD_DESTINATION_NAME, unit_object_path);
@@ -34,10 +57,11 @@ diff -up dnf5-5.2.8.1/dnf5/commands/offline/offline.cpp.5~ dnf5-5.2.8.1/dnf5/com
          if (std::find(wants.begin(), wants.end(), SYSTEMD_SERVICE_NAME) == wants.end()) {
              throw libdnf5::cli::CommandExitError(
                  1, M_("{} is not wanted by system-update.target."), SYSTEMD_SERVICE_NAME);
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp	2025-01-01 04:36:29.856215404 +0100
-@@ -55,13 +55,13 @@ private:
+diff --git a/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp b/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp
+index 150d6cc9b..d8a62fc64 100644
+--- a/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp
++++ b/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp
+@@ -55,13 +55,13 @@ class DbusAdvisoryReferenceWrapper {
  class DbusAdvisoryPackageWrapper {
  public:
      DbusAdvisoryPackageWrapper(const dnfdaemon::KeyValueMap & rawdata, DbusAdvisoryWrapper * advisory);
@@ -57,7 +81,7 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp.5~ dn
  
      DbusAdvisoryWrapper get_advisory() const;
  
-@@ -74,11 +74,11 @@ private:
+@@ -74,11 +74,11 @@ class DbusAdvisoryPackageWrapper {
  class DbusAdvisoryModuleWrapper {
  public:
      DbusAdvisoryModuleWrapper(const dnfdaemon::KeyValueMap & rawdata, DbusAdvisoryWrapper * advisory);
@@ -103,11 +127,12 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_advisory_wrapper.hpp.5~ dn
      std::vector<DbusAdvisoryReferenceWrapper> get_references() const { return references; }
      std::vector<DbusAdvisoryCollectionWrapper> get_collections() const { return collections; }
  
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp.5~	2025-01-01 04:36:29.856258375 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp	2025-01-01 04:37:20.861770267 +0100
+diff --git a/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp b/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp
+index e46935afd..d885b0641 100644
+--- a/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp
++++ b/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp
 @@ -24,7 +24,7 @@ namespace dnfdaemon::client {
- DbusEnvironmentWrapper::DbusEnvironmentWrapper(const dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata){};
+ DbusEnvironmentWrapper::DbusEnvironmentWrapper(const dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata) {};
  
  std::set<std::string> DbusEnvironmentWrapper::get_repos() const {
 -    std::vector<std::string> repos_vector = rawdata.at("repos");
@@ -115,10 +140,11 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.cpp.5~
      std::set<std::string> repos_set(repos_vector.begin(), repos_vector.end());
      return repos_set;
  };
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp	2025-01-01 04:36:29.856318839 +0100
-@@ -24,6 +24,7 @@ along with libdnf.  If not, see <https:/
+diff --git a/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp b/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp
+index 16e4a52d4..aa8d9e178 100644
+--- a/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp
++++ b/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp
+@@ -24,6 +24,7 @@ along with libdnf.  If not, see <https://www.gnu.org/licenses/>.
  #include <dnf5daemon-server/utils.hpp>
  
  #include <set>
@@ -141,10 +167,11 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_environment_wrapper.hpp.5~
      // TODO(mblaha) proper installed value
      bool get_installed() const { return false; }
      std::set<std::string> get_repos() const;
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp	2025-01-01 04:36:29.856347774 +0100
-@@ -59,7 +59,7 @@ DbusGoalWrapper::DbusGoalWrapper(std::ve
+diff --git a/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp b/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp
+index 044c13ac0..f50bd652c 100644
+--- a/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp
++++ b/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp
+@@ -59,7 +59,7 @@ DbusGoalWrapper::DbusGoalWrapper(std::vector<dnfdaemon::DbusTransactionItem> tra
          auto ti_replaces = ti_attrs.find("replaces");
          if (ti_replaces != ti_attrs.end()) {
              std::vector<DbusPackageWrapper> replaces;
@@ -153,9 +180,10 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_goal_wrapper.cpp.5~ dnf5-5
              for (const auto & pkg_id : replaces_id) {
                  auto replaced_pkg_idx = transaction_packages_by_id.find(pkg_id);
                  if (replaced_pkg_idx != transaction_packages_by_id.end()) {
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp	2025-01-01 04:36:29.856375837 +0100
+diff --git a/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp b/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp
+index 13faed85e..2a0898b26 100644
+--- a/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp
++++ b/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp
 @@ -24,7 +24,7 @@ namespace dnfdaemon::client {
  DbusGroupWrapper::DbusGroupWrapper(const dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata) {
      auto packages_iter = rawdata.find("packages");
@@ -165,7 +193,7 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp.5~ dnf5-
          for (auto & raw_package : raw_packages) {
              packages.push_back(DbusGroupPackageWrapper(raw_package));
          }
-@@ -32,7 +32,7 @@ DbusGroupWrapper::DbusGroupWrapper(const
+@@ -32,7 +32,7 @@ DbusGroupWrapper::DbusGroupWrapper(const dnfdaemon::KeyValueMap & rawdata) : raw
  };
  
  std::set<std::string> DbusGroupWrapper::get_repos() const {
@@ -174,10 +202,11 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.cpp.5~ dnf5-
      std::set<std::string> repos_set(repos_vector.begin(), repos_vector.end());
      return repos_set;
  };
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp	2025-01-01 04:36:29.856406896 +0100
-@@ -34,7 +34,7 @@ public:
+diff --git a/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp b/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp
+index 87bdda6f0..c6245fddc 100644
+--- a/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp
++++ b/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp
+@@ -34,7 +34,7 @@ class DbusGroupWrapper {
      class DbusGroupPackageWrapper {
      public:
          explicit DbusGroupPackageWrapper(dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata) {}
@@ -186,7 +215,7 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp.5~ dnf5-
          libdnf5::comps::PackageType get_type() const {
              return static_cast<libdnf5::comps::PackageType>(key_value_map_get<int>(rawdata, "type"));
          }
-@@ -45,13 +45,13 @@ public:
+@@ -45,13 +45,13 @@ class DbusGroupWrapper {
  
      explicit DbusGroupWrapper(const dnfdaemon::KeyValueMap & rawdata);
  
@@ -207,16 +236,19 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_group_wrapper.hpp.5~ dnf5-
      std::set<std::string> get_repos() const;
      std::vector<DbusGroupPackageWrapper> get_packages() const { return packages; }
  
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp.5~	2025-01-01 04:36:29.856454545 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp	2025-01-01 04:41:08.274967752 +0100
+diff --git a/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp b/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp
+index a59d38368..398fd8de3 100644
+--- a/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp
++++ b/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp
 @@ -32,30 +32,30 @@ class DbusPackageWrapper {
  public:
-     explicit DbusPackageWrapper(const dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata){};
+     explicit DbusPackageWrapper(const dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata) {};
  
 -    int get_id() { return rawdata.at("id"); }
 -    std::string get_name() const { return rawdata.at("name"); }
--    std::string get_na() const { return get_name() + "." + get_arch(); }
++    int get_id() { return int{rawdata.at("id")}; }
++    std::string get_name() const { return std::string{rawdata.at("name")}; }
+     std::string get_na() const { return get_name() + "." + get_arch(); }
 -    std::string get_epoch() const { return rawdata.at("epoch"); }
 -    std::string get_version() const { return rawdata.at("version"); }
 -    std::string get_release() const { return rawdata.at("release"); }
@@ -234,9 +266,6 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp.5~ dnf
 -    std::string get_url() const { return rawdata.at("url"); }
 -    std::string get_license() const { return rawdata.at("license"); }
 -    std::string get_description() const { return rawdata.at("description"); }
-+    int get_id() { return int{rawdata.at("id")}; }
-+    std::string get_name() const { return std::string{rawdata.at("name")}; }
-+    std::string get_na() const { return std::string{get_name() + "." + get_arch()}; }
 +    std::string get_epoch() const { return std::string{rawdata.at("epoch")}; }
 +    std::string get_version() const { return std::string{rawdata.at("version")}; }
 +    std::string get_release() const { return std::string{rawdata.at("release")}; }
@@ -263,10 +292,11 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_package_wrapper.hpp.5~ dnf
  
  private:
      dnfdaemon::KeyValueMap rawdata;
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp.5~	2024-12-05 21:31:02.000000000 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp	2025-01-01 04:36:29.856501354 +0100
-@@ -26,7 +26,7 @@ std::vector<std::pair<std::string, std::
+diff --git a/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp b/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp
+index a5c5dd19c..005303407 100644
+--- a/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp
++++ b/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp
+@@ -26,7 +26,7 @@ std::vector<std::pair<std::string, std::string>> DbusRepoWrapper::get_distro_tag
      // serialized to vector<string>.
      // convert [tag1, val1, tag2, val2,...] back to [(tag1, val1), (tag2, val2),...]
      std::vector<std::pair<std::string, std::string>> dt{};
@@ -275,12 +305,13 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.cpp.5~ dnf5-5
      if (!tags_raw.empty()) {
          for (size_t i = 0; i < (tags_raw.size() - 1); i += 2) {
              dt.emplace_back(tags_raw[i], tags_raw[i + 1]);
-diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp.5~ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp
---- dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp.5~	2025-01-01 04:36:29.856551979 +0100
-+++ dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp	2025-01-01 04:45:05.582731795 +0100
-@@ -31,33 +31,33 @@ class DbusRepoWrapper : public libdnf5::
+diff --git a/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp b/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp
+index 254928ad2..a4788ac8a 100644
+--- a/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp
++++ b/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp
+@@ -31,33 +31,33 @@ class DbusRepoWrapper : public libdnf5::cli::output::IRepoInfo {
  public:
-     explicit DbusRepoWrapper(dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata){};
+     explicit DbusRepoWrapper(dnfdaemon::KeyValueMap & rawdata) : rawdata(rawdata) {};
  
 -    std::string get_id() const { return rawdata.at("id"); }
 -    std::string get_name() const { return rawdata.at("name"); }
@@ -308,20 +339,20 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp.5~ dnf5-5
 +    bool is_enabled() const { return bool{rawdata.at("enabled")}; }
 +    int get_priority() const { return int{rawdata.at("priority")}; }
 +    int get_cost() const { return int{rawdata.at("cost")}; }
-+    std::vector<std::string> get_baseurl() const { return std::vector<std::string>{rawdata.at("baseurl")}; }
++    std::vector<std::string> get_baseurl() const { return std::vector<std::string>(rawdata.at("baseurl")); }
 +    std::string get_metalink() const { return std::string{rawdata.at("metalink")}; }
 +    std::string get_mirrorlist() const { return std::string{rawdata.at("mirrorlist")}; }
 +    int get_metadata_expire() const { return int{rawdata.at("metadata_expire")}; }
-+    std::vector<std::string> get_excludepkgs() const { return std::vector<std::string>{rawdata.at("excludepkgs")}; }
-+    std::vector<std::string> get_includepkgs() const { return std::vector<std::string>{rawdata.at("includepkgs")}; }
++    std::vector<std::string> get_excludepkgs() const { return std::vector<std::string>(rawdata.at("excludepkgs")); }
++    std::vector<std::string> get_includepkgs() const { return std::vector<std::string>(rawdata.at("includepkgs")); }
 +    bool get_skip_if_unavailable() const { return bool{rawdata.at("skip_if_unavailable")}; }
-+    std::vector<std::string> get_gpgkey() const { return std::vector<std::string>{rawdata.at("gpgkey")}; }
-+    bool get_gpgcheck() const { return bool{rawdata.at("pkg_gpgcheck")}; }
++    std::vector<std::string> get_gpgkey() const { return std::vector<std::string>(rawdata.at("gpgkey")); }
++    bool get_gpgcheck() const { return bool{rawdata.at("gpgcheck")}; }
 +    bool get_pkg_gpgcheck() const { return bool{rawdata.at("pkg_gpgcheck")}; }
 +    bool get_repo_gpgcheck() const { return bool{rawdata.at("repo_gpgcheck")}; }
 +    std::string get_repo_file_path() const { return std::string{rawdata.at("repofile")}; }
 +    std::string get_revision() const { return std::string{rawdata.at("revision")}; }
-+    std::vector<std::string> get_content_tags() const { return std::vector<std::string>{rawdata.at("content_tags")}; }
++    std::vector<std::string> get_content_tags() const { return std::vector<std::string>(rawdata.at("content_tags")); }
      std::vector<std::pair<std::string, std::string>> get_distro_tags() const;
 -    int64_t get_timestamp() const { return rawdata.at("cache_updated"); }
 -    int get_max_timestamp() const { return rawdata.at("updated"); }
@@ -334,7 +365,7 @@ diff -up dnf5-5.2.8.1/dnf5daemon-client/wrappers/dbus_repo_wrapper.hpp.5~ dnf5-5
 +    uint64_t get_size() const { return uint64_t{rawdata.at("size")}; }
 +    uint64_t get_pkgs() const { return uint64_t{rawdata.at("pkgs")}; }
 +    uint64_t get_available_pkgs() const { return uint64_t{rawdata.at("available_pkgs")}; }
-+    std::vector<std::string> get_mirrors() const { return std::vector<std::string>{rawdata.at("mirrors")}; }
++    std::vector<std::string> get_mirrors() const { return std::vector<std::string>(rawdata.at("mirrors")); }
  
  private:
      dnfdaemon::KeyValueMap rawdata;

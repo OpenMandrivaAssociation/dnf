@@ -1,4 +1,4 @@
-From c6cb05962b3d3c48492b7f3278c78b95d3bd7a13 Mon Sep 17 00:00:00 2001
+From af00463e6449f796dad0e4a4da2cb86a6373eb72 Mon Sep 17 00:00:00 2001
 From: Marek Blaha <mblaha@redhat.com>
 Date: Fri, 17 May 2024 13:01:30 +0200
 Subject: [PATCH] dnfdaemon: sdbus::Variant constructor is explicit

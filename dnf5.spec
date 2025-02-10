@@ -28,6 +28,7 @@ BuildRequires: ninja
 BuildRequires: gettext
 BuildRequires: cmake(toml11)
 BuildRequires: perl(Test::Exception)
+BuildRequires: pkgconfig(appstream) >= 0.16
 BuildRequires: pkgconfig(libcomps)
 BuildRequires: pkgconfig(fmt)
 BuildRequires: pkgconfig(json-c)

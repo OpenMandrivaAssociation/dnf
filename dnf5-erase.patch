@@ -1,0 +1,17 @@
+diff -up dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf.omv~ dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf
+--- dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf.omv~	2025-02-12 01:13:52.322477907 +0100
++++ dnf5-5.2.10.0/dnf5/config/usr/share/dnf5/aliases.d/compatibility.conf	2025-02-12 01:16:07.358996347 +0100
+@@ -115,6 +115,13 @@ descr = "Alias for 'distro-sync'"
+ group_id = 'commands-compatibility-aliases'
+ complete = false
+ 
++['erase']
++type = 'command'
++attached_command = 'remove'
++descr = "Alias for 'remove'"
++group_id = 'commands-compatibility-aliases'
++complete = true
++
+ ['grp']
+ type = 'command'
+ attached_command = 'group'

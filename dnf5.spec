@@ -14,7 +14,7 @@
 Summary: Command-line package manager
 Name: dnf5
 Version: 5.2.10.0
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -108,12 +108,17 @@ Provides: dnf5-command(needs-restarting)
 Provides: dnf5-command(repoclosure)
 Provides: dnf5-command(check)
 Provides: dnf5-command(provides)
+# Aliases
+Provides: dnf5-command(rm)
+Provides: dnf5-command(erase)
+Provides: dnf5-command(dsync)
 
 %patchlist
 dnf5-znver1.patch
 dnf5-distro-release.patch
 # Bring back dnf 4.x's --ref shortcut (meaning --refresh)
 dnf5-ref.patch
+dnf5-erase.patch
 # sdbus-cpp 2.0 support from master branch
 https://github.com/rpm-software-management/dnf5/commit/1e1a0627a5102f13f5e4515823ef2305bd4e9763.patch
 https://github.com/rpm-software-management/dnf5/commit/cdf99383de790a1c7497f297094c156b9b862d86.patch

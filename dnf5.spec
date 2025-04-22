@@ -13,8 +13,8 @@
 
 Summary: Command-line package manager
 Name: dnf5
-Version: 5.2.10.0
-Release: %{?snapshot:0.%{snapshot}.}2
+Version: 5.2.13.0
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -119,20 +119,7 @@ dnf5-distro-release.patch
 # Bring back dnf 4.x's --ref shortcut (meaning --refresh)
 dnf5-ref.patch
 dnf5-erase.patch
-# sdbus-cpp 2.0 support from master branch
-https://github.com/rpm-software-management/dnf5/commit/1e1a0627a5102f13f5e4515823ef2305bd4e9763.patch
-https://github.com/rpm-software-management/dnf5/commit/cdf99383de790a1c7497f297094c156b9b862d86.patch
-https://github.com/rpm-software-management/dnf5/commit/af00463e6449f796dad0e4a4da2cb86a6373eb72.patch
-https://github.com/rpm-software-management/dnf5/commit/4714a43af45942a033caff85b8b1d5d9983c7035.patch
-https://github.com/rpm-software-management/dnf5/commit/270094934dc6ecfce6136eb24c872757723c42ea.patch
-https://github.com/rpm-software-management/dnf5/commit/fb9cea1132b03fc22439d0e3f0d38e5240697ea7.patch
-https://github.com/rpm-software-management/dnf5/commit/c5df756b2e1a5c82801a24b9a296e5881ec80a70.patch
-https://github.com/rpm-software-management/dnf5/commit/60e5a6bbf4172079fb72aadbc3021a3de3cf937e.patch
-https://github.com/rpm-software-management/dnf5/commit/4eb8ef299690ab4795f73d06bdf5883dc0a34f02.patch
-# Other relevant patches from master
-https://github.com/rpm-software-management/dnf5/commit/ec6c1d829ab19cfb40b3b1c58d419c8fdef56b0c.patch
-https://github.com/rpm-software-management/dnf5/commit/282d0c60ddcf39b813c2bc8de9482bfe69c84866.patch
-https://github.com/rpm-software-management/dnf5/commit/76c2d994f507e2558ca26134b87042ac930793ce.patch
+dnf5-workaround-rpmtsRun-exit-code.patch
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
@@ -432,6 +419,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_datadir}/dbus-1/system-services/org.rpm.dnf.v0.service
 %{_datadir}/dbus-1/interfaces/org.rpm.dnf.v0.*.xml
 %{_datadir}/polkit-1/actions/org.rpm.dnf.v0.policy
+%config %{_sysconfdir}/dnf/dnf5daemon-server.conf
 %doc %{_mandir}/man8/dnf5daemon-server.8*
 %doc %{_mandir}/man8/dnf5daemon-dbus-api.8*
 

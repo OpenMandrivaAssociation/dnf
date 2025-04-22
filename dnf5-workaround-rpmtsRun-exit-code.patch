@@ -1,0 +1,17 @@
+diff -up dnf5-5.2.13.0/libdnf5/rpm/transaction.cpp.omv~ dnf5-5.2.13.0/libdnf5/rpm/transaction.cpp
+--- dnf5-5.2.13.0/libdnf5/rpm/transaction.cpp.omv~	2025-04-22 20:49:21.534328396 +0200
++++ dnf5-5.2.13.0/libdnf5/rpm/transaction.cpp	2025-04-22 20:54:58.657523304 +0200
+@@ -215,6 +215,13 @@ int Transaction::run() {
+         callbacks->before_begin(static_cast<uint64_t>(nelements));
+     }
+     auto rc = rpmtsRun(ts, nullptr, ignore_set);
++    // FIXME(bero) We frequently see a return value of -1 combined with
++    // no indication of errors
++    // It's not clear what triggers this (likely a bug in rpm? Failure
++    // of an optional %post script?); for now, let's work around it here.
++    if (rc != 0 && rpmtsProblems(ts) == NULL) {
++        rc = 0;
++    }
+     if (callbacks) {
+         callbacks->after_complete(rc == 0);
+     }

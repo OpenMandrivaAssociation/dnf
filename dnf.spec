@@ -7,14 +7,14 @@
 %define devname %mklibname -d dnf5
 %global optflags %{optflags} -Wno-error=vla-cxx-extension
 
-# (tpg) dnf5 is not yet ready to replace dnf
-%bcond_with dnf5_default
+# (bero) dnf5 is now ready to replace dnf
+%bcond_without dnf5_default
 %bcond_without ruby
 
 Summary: Command-line package manager
-Name: dnf5
+Name: dnf
 Version: 5.2.13.0
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -67,13 +67,13 @@ BuildRequires: python3dist(breathe)
 Requires: dnf-data
 %endif
 Recommends: bash-completion
+Requires: %{libname} = %{EVRD}
 %rename microdnf
 
 %if %{with dnf5_default}
-Provides: dnf = %{EVRD}
-Obsoletes: dnf < 5
 Provides: yum = %{EVRD}
 Obsoletes: yum < 5
+%rename dnf5
 %endif
 
 Provides: dnf5-command(install)
@@ -131,6 +131,7 @@ Summary: dnf5 plugin for automatic updates
 Group: System
 Requires: %{name} = %{EVRD}
 Provides: dnf5-command(automatic)
+%rename dnf5-plugin-automatic
 
 %description plugin-automatic
 Alternative CLI to dnf upgrade with specific facilities to make it suitable
@@ -142,6 +143,7 @@ Summary: dnf5 plugin for handling appstream metadata
 Group: System
 Requires: %{name} = %{EVRD}
 Provides: dnf5-command(appstream)
+%rename dnf5-plugin-appstream
 
 %description plugin-appstream
 DNF plugin for handling appstream metadata
@@ -151,6 +153,7 @@ Summary: dnf5 plugin for detecting expired pgp keys
 Group: System
 Requires: %{name} = %{EVRD}
 Provides: dnf5-command(expired-pgp-keys)
+%rename dnf5-plugin-expired-pgp-keys
 
 %description plugin-expired-pgp-keys
 DNF plugin for detecting expired pgp keys
@@ -231,7 +234,7 @@ Group: Development/Ruby
 Ruby language bindings to the DNF package manager.
 
 %prep
-%autosetup -p1 -n %{?snapshot:dnf-main}%{!?snapshot:%{name}-%{version}}
+%autosetup -p1 -n %{?snapshot:dnf-main}%{!?snapshot:%{name}5-%{version}}
 %if %{cross_compiling}
 # FIXME this should be fixed properly, but for now, this
 # is the fastest way to limit the damage of an added

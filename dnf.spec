@@ -13,8 +13,8 @@
 
 Summary: Command-line package manager
 Name: dnf
-Version: 5.2.13.0
-Release: %{?snapshot:0.%{snapshot}.}2
+Version: 5.2.13.1
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -215,6 +215,7 @@ Development files for the DNF package management library.
 %package -n python-%{name}
 Summary: Python language bindings to the DNF package manager
 Group: Development/Python
+%rename python-dnf5
 
 %description -n python-%{name}
 Python language bindings to the DNF package manager.
@@ -222,6 +223,7 @@ Python language bindings to the DNF package manager.
 %package -n perl-%{name}
 Summary: Perl language bindings to the DNF package manager
 Group: Development/Perl
+%rename perl-dnf5
 
 %description -n perl-%{name}
 Perl language bindings to the DNF package manager.
@@ -229,6 +231,7 @@ Perl language bindings to the DNF package manager.
 %package -n ruby-%{name}
 Summary: Ruby language bindings to the DNF package manager
 Group: Development/Ruby
+%rename ruby-dnf5
 
 %description -n ruby-%{name}
 Ruby language bindings to the DNF package manager.

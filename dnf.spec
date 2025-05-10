@@ -14,7 +14,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.2.13.1
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -246,6 +246,8 @@ find . -name CMakeLists.txt |xargs \
 	sed -i -e 's/include_directories(\${LIBXML2/#&/g' -e 's/include_directories(\${GLIB/#&/g' -e 's/include_directories(\${JSONC/#&/g' -e 's/include_directories(\${REPO/#&/g' -e 's/target_include_directories(/#&/g'
 %global optflags %{optflags} -I%{_prefix}/%{_target_platform}/include/glib-2.0 -I%{_prefix}/%{_target_platform}/include/gio-unix-2.0 -I%{_prefix}/%{_target_platform}/%{_lib}/glib-2.0/include -I%{_prefix}/%{_target_platform}/include/libxml2 -I%{_prefix}/%{_target_platform}/include/json-c -Wno-error=vla-cxx-extension
 %endif
+export CC=gcc
+export CXX=g++
 
 %cmake \
 	-G Ninja \
@@ -263,6 +265,8 @@ find . -name CMakeLists.txt |xargs \
 	-DPKG_CONFIG_EXECUTABLE=%{_bindir}/pkg-config
 
 %build
+export CC=gcc
+export CXX=g++
 %ninja_build -C build
 %ninja_build -C build doc-man
 

@@ -5,7 +5,7 @@
 %define libname %mklibname dnf5
 %define clilibname %mklibname dnf5-cli
 %define devname %mklibname -d dnf5
-%global optflags %{optflags} -Wno-error=vla-cxx-extension
+#global optflags %{optflags} -Wno-error=vla-cxx-extension
 
 # (bero) dnf5 is now ready to replace dnf
 %bcond_without dnf5_default

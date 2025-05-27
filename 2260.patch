@@ -1,0 +1,30 @@
+From 9dc310461278e64ea609f8f55a99f3d88e0fcf1c Mon Sep 17 00:00:00 2001
+From: Tim Lauridsen <tla@rasmil.dk>
+Date: Mon, 26 May 2025 10:57:01 +0200
+Subject: [PATCH] add reset method, when using sdbus
+
+---
+ dnf5daemon-server/services/goal/goal.cpp | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/dnf5daemon-server/services/goal/goal.cpp b/dnf5daemon-server/services/goal/goal.cpp
+index 1a249b92a..7162c4fc5 100644
+--- a/dnf5daemon-server/services/goal/goal.cpp
++++ b/dnf5daemon-server/services/goal/goal.cpp
+@@ -115,6 +115,16 @@ void Goal::dbus_register() {
+                 [this](sdbus::MethodCall call) -> void {
+                     session.get_threads_manager().handle_method(*this, &Goal::cancel, call, session.session_locale);
+                 },
++                {}},
++            sdbus::MethodVTableItem{
++                sdbus::MethodName{"reset"},
++                sdbus::Signature{""},
++                {},
++                sdbus::Signature{""},
++                {"success", "error_msg"},
++                [this](sdbus::MethodCall call) -> void {
++                    session.get_threads_manager().handle_method(*this, &Goal::reset, call, session.session_locale);
++                },
+                 {}})
+         .forInterface(dnfdaemon::INTERFACE_GOAL);
+ #else

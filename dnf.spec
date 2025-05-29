@@ -14,7 +14,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.2.13.1
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -23,6 +23,9 @@ Source0: https://github.com/rpm-software-management/dnf5/archive/refs/heads/main
 %else
 Source0: https://github.com/rpm-software-management/dnf5/archive/refs/tags/%{version}.tar.gz
 %endif
+# Not yet merged but should fix yumex
+Patch0:	https://patch-diff.githubusercontent.com/raw/rpm-software-management/dnf5/pull/2260.patch
+
 BuildRequires: cmake
 BuildRequires: ninja
 BuildRequires: gettext

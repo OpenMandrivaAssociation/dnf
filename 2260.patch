@@ -1,7 +1,8 @@
-From 9dc310461278e64ea609f8f55a99f3d88e0fcf1c Mon Sep 17 00:00:00 2001
+From 32681fb058f8b7fa9dd8a6f25219fff2fb862773 Mon Sep 17 00:00:00 2001
 From: Tim Lauridsen <tla@rasmil.dk>
 Date: Mon, 26 May 2025 10:57:01 +0200
-Subject: [PATCH] add reset method, when using sdbus
+Subject: [PATCH] dnf5daemon: Fix a missing reset method if built with
+ sdbus-s++ version 2
 
 ---
  dnf5daemon-server/services/goal/goal.cpp | 10 ++++++++++

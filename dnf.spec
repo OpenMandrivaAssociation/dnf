@@ -426,6 +426,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_datadir}/dbus-1/system-services/org.rpm.dnf.v0.service
 %{_datadir}/dbus-1/interfaces/org.rpm.dnf.v0.*.xml
 %{_datadir}/polkit-1/actions/org.rpm.dnf.v0.policy
+%{_datadir}/polkit-1/rules.d/org.rpm.dnf.v0.rules
 %config %{_sysconfdir}/dnf/dnf5daemon-server.conf
 %doc %{_mandir}/man8/dnf5daemon-server.8*
 %doc %{_mandir}/man8/dnf5daemon-dbus-api.8*

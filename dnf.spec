@@ -254,8 +254,8 @@ find . -name CMakeLists.txt |xargs \
 	-DWITH_MAN:BOOL=true \
 	-DPERL_INSTALLDIRS=vendor \
 %if %{with ruby}
-	-DRuby_VENDORARCH_DIR=%{_libdir}/ruby/vendor_ruby/3.2.0 \
-	-DRuby_VENDORLIBDIR=%{_datadir}/ruby/vendor_ruby \
+	-DRuby_VENDORARCH_DIR=$(ruby -e 'print $:[3]') \
+	-DRuby_VENDORLIBDIR=$(ruby -e 'print $:[5]') \
 %else
 	-DWITH_RUBY:BOOL=OFF \
 %endif

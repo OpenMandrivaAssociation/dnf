@@ -13,7 +13,7 @@
 
 Summary: Command-line package manager
 Name: dnf
-Version: 5.2.16.0
+Version: 5.2.17.0
 Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
@@ -348,6 +348,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-check.8*
 %doc %{_mandir}/man8/dnf5-clean.8*
 %doc %{_mandir}/man8/dnf5-copr.8*
+%doc %{_mandir}/man8/dnf5-do.8*
 %doc %{_mandir}/man8/dnf5-distro-sync.8*
 %doc %{_mandir}/man8/dnf5-downgrade.8*
 %doc %{_mandir}/man8/dnf5-download.8*
@@ -364,6 +365,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-remove.8*
 %doc %{_mandir}/man8/dnf5-repo.8*
 %doc %{_mandir}/man8/dnf5-repoclosure.8*
+%doc %{_mandir}/man8/dnf5-repomanage.8*
 %doc %{_mandir}/man8/dnf5-repoquery.8*
 %doc %{_mandir}/man8/dnf5-reposync.8*
 %doc %{_mandir}/man8/dnf5-search.8*

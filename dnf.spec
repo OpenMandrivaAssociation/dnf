@@ -1,11 +1,12 @@
 #define snapshot 20220923
 %define major 2
+%define climajor 3
 %define oldlibname %mklibname dnf5_ 1
 %define oldclilibname %mklibname dnf5-cli 1
 %define libname %mklibname dnf5
 %define clilibname %mklibname dnf5-cli
 %define devname %mklibname -d dnf5
-%global optflags %{optflags} -Wno-error=vla-cxx-extension
+%global optflags %{optflags} -Wno-error=vla-cxx-extension -Wno-error=unused-but-set-variable -Wno-error=cast-align
 
 # (bero) dnf5 is now ready to replace dnf
 %bcond_without dnf5_default
@@ -13,8 +14,8 @@
 
 Summary: Command-line package manager
 Name: dnf
-Version: 5.2.17.0
-Release: %{?snapshot:0.%{snapshot}.}3
+Version: 5.3.0.0
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -47,6 +48,7 @@ BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
 BuildRequires: pkgconfig(libcurl)
+BuildRequires: pkgconfig(libpkgmanifest)
 BuildRequires: cmake(bash-completion)
 BuildRequires: gettext
 BuildRequires: createrepo_c
@@ -62,8 +64,8 @@ BuildRequires: ruby-devel
 %endif
 BuildRequires: swig
 # For building man pages
-BuildRequires: python-sphinx
-BuildRequires: python3dist(breathe)
+BuildRequires: python%{pyver}dist(sphinx)
+BuildRequires: python%{pyver}dist(breathe)
 %if %{without dnf5_default}
 Requires: dnf-data
 %endif
@@ -121,6 +123,7 @@ dnf5-distro-release.patch
 dnf5-ref.patch
 dnf5-erase.patch
 dnf5-workaround-rpmtsRun-exit-code.patch
+dnf-5.3-compile.patch
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
@@ -158,6 +161,14 @@ Provides: dnf5-command(expired-pgp-keys)
 
 %description plugin-expired-pgp-keys
 DNF plugin for detecting expired pgp keys
+
+%package plugin-local
+Summary: dnf5 plugin for creating a local DNF repository from downloaded packages
+Group: System
+Requires: %{name} = %{EVRD}
+
+%description plugin-local
+DNF plugin for creating a local DNF repository from downloaded packages
 
 %package -n %{libname}
 Summary: Package management library
@@ -335,10 +346,12 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %dir %{_libdir}/libdnf5/plugins
 %{_libdir}/libdnf5/plugins/actions.so
 %config %{_sysconfdir}/dnf/libdnf5-plugins/actions.conf
+%config %{_sysconfdir}/dnf/libdnf5-plugins/python_plugins_loader.conf
 %dir %{_sysconfdir}/dnf/libdnf5-plugins/actions.d
 %doc %{_mandir}/man5/dnf5.conf.5*
 %doc %{_mandir}/man5/dnf5.conf-todo.5*
 %doc %{_mandir}/man5/dnf5.conf-deprecated.5*
+%doc %{_mandir}/man5/dnf5.conf-vendorpolicy.5*
 %doc %{_mandir}/man8/libdnf5-actions.8*
 %doc %{_mandir}/man7/dnf5*.7*
 %doc %{_mandir}/man8/dnf5.8*
@@ -358,6 +371,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-install.8*
 %doc %{_mandir}/man8/dnf5-leaves.8*
 %doc %{_mandir}/man8/dnf5-makecache.8*
+%doc %{_mandir}/man8/dnf5-manifest.8*
 %doc %{_mandir}/man8/dnf5-mark.8*
 %doc %{_mandir}/man8/dnf5-needs-restarting.8*
 %doc %{_mandir}/man8/dnf5-provides.8*
@@ -382,7 +396,6 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-config-manager.8.zst
 %doc %{_mandir}/man8/dnf5-replay.8*
 
-
 %files plugin-automatic -f dnf5-plugin-automatic.lang
 %{_bindir}/dnf-automatic
 %{_prefix}/lib/systemd/system/dnf-automatic.service
@@ -405,6 +418,11 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_libdir}/libdnf5/plugins/expired-pgp-keys.so
 %{_mandir}/man8/libdnf5-expired-pgp-keys.8*
 
+%files plugin-local
+%config %{_sysconfdir}/dnf/libdnf5-plugins/local.conf
+%{_libdir}/libdnf5/plugins/local.so
+%{_mandir}/man8/libdnf5-local.8*
+
 %files -n %{libname} -f libdnf5.lang
 %if %{with dnf5_default}
 %dir %{_sysconfdir}/dnf/vars
@@ -415,7 +433,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_libdir}/libdnf5.so.%{major}*
 
 %files -n %{clilibname} -f libdnf5-cli.lang
-%{_libdir}/libdnf5-cli.so.%{major}*
+%{_libdir}/libdnf5-cli.so.%{climajor}*
 
 %files -n dnf5daemon-client -f dnf5daemon-client.lang
 %{_bindir}/dnf5daemon-client

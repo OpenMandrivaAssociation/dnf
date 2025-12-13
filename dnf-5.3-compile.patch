@@ -1,0 +1,14 @@
+diff -up dnf5-5.3.0.0/test/dnf5-plugins/needs_restarting_plugin/NeedsRestartingTest.cpp.omv~ dnf5-5.3.0.0/test/dnf5-plugins/needs_restarting_plugin/NeedsRestartingTest.cpp
+--- dnf5-5.3.0.0/test/dnf5-plugins/needs_restarting_plugin/NeedsRestartingTest.cpp.omv~	2025-12-13 04:06:17.251973119 +0100
++++ dnf5-5.3.0.0/test/dnf5-plugins/needs_restarting_plugin/NeedsRestartingTest.cpp	2025-12-13 04:06:28.925321501 +0100
+@@ -114,8 +114,8 @@ void NeedsRestartingTest::test_processes
+     libdnf5::OptionBool exclude_services_option(false);
+ 
+     // Test that both options can be set
+-    processes_option.set("true");
+-    exclude_services_option.set("true");
++    processes_option.set(true);
++    exclude_services_option.set(true);
+ 
+     CPPUNIT_ASSERT_EQUAL(true, processes_option.get_value());
+     CPPUNIT_ASSERT_EQUAL(true, exclude_services_option.get_value());

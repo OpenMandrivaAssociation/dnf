@@ -15,7 +15,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.3.0.0
-Release: %{?snapshot:0.%{snapshot}.}1
+Release: %{?snapshot:0.%{snapshot}.}2
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -169,6 +169,15 @@ Requires: %{name} = %{EVRD}
 
 %description plugin-local
 DNF plugin for creating a local DNF repository from downloaded packages
+
+%package plugin-python
+Summary: dnf plugin for supporting plugins written in Python
+Group: System
+Requires: %{name} = %{EVRD}
+Requires: python-%{name} = %{EVRD}
+
+%description plugin-python
+dnf plugin for supporting plugins written in Python
 
 %package -n %{libname}
 Summary: Package management library
@@ -346,7 +355,6 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %dir %{_libdir}/libdnf5/plugins
 %{_libdir}/libdnf5/plugins/actions.so
 %config %{_sysconfdir}/dnf/libdnf5-plugins/actions.conf
-%config %{_sysconfdir}/dnf/libdnf5-plugins/python_plugins_loader.conf
 %dir %{_sysconfdir}/dnf/libdnf5-plugins/actions.d
 %doc %{_mandir}/man5/dnf5.conf.5*
 %doc %{_mandir}/man5/dnf5.conf-todo.5*
@@ -423,6 +431,11 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_libdir}/libdnf5/plugins/local.so
 %{_mandir}/man8/libdnf5-local.8*
 
+%files plugin-python
+%config %{_sysconfdir}/dnf/libdnf5-plugins/python_plugins_loader.conf
+%{_libdir}/libdnf5/plugins/python_plugins_loader.*
+%dir %{python_sitelib}/libdnf_plugins/
+
 %files -n %{libname} -f libdnf5.lang
 %if %{with dnf5_default}
 %dir %{_sysconfdir}/dnf/vars
@@ -463,8 +476,6 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_libdir}/pkgconfig/libdnf5-cli.pc
 
 %files -n python-%{name}
-%dir %{python_sitelib}/libdnf_plugins/
-%{_libdir}/libdnf5/plugins/python_plugins_loader.*
 %{python_sitearch}/libdnf5
 %{python_sitearch}/libdnf5-*.dist-info
 %{python_sitearch}/libdnf5_cli

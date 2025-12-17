@@ -15,7 +15,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.3.0.0
-Release: %{?snapshot:0.%{snapshot}.}2
+Release: %{?snapshot:0.%{snapshot}.}3
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging

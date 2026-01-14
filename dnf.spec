@@ -121,6 +121,7 @@ dnf5-znver1.patch
 dnf5-distro-release.patch
 # Bring back dnf 4.x's --ref shortcut (meaning --refresh)
 dnf5-ref.patch
+# and "dnf erase" (used to mean "dnf rm")
 dnf5-erase.patch
 dnf5-workaround-rpmtsRun-exit-code.patch
 dnf-5.3-compile.patch
@@ -265,8 +266,8 @@ TOP="$(pwd)"
 # is the fastest way to limit the damage of an added
 # -I/usr/include
 find . -name CMakeLists.txt |xargs \
-	sed -i -e 's/include_directories(\${LIBXML2/#&/g' -e 's/include_directories(\${GLIB/#&/g' -e 's/include_directories(\${JSONC/#&/g' -e 's/include_directories(\${REPO/#&/g' -e 's/target_include_directories(/#&/g'
-%global optflags %{optflags} -I%{_prefix}/%{_target_platform}/include/glib-2.0 -I%{_prefix}/%{_target_platform}/include/gio-unix-2.0 -I%{_prefix}/%{_target_platform}/%{_lib}/glib-2.0/include -I%{_prefix}/%{_target_platform}/include/libxml2 -I%{_prefix}/%{_target_platform}/include/json-c -Wno-error=vla-cxx-extension
+	sed -i -e 's/include_directories(\${LIBXML2/#&/g' -e 's/include_directories(\${GLIB/#&/g' -e 's/include_directories(\${JSONC/#&/g' -e 's/include_directories(\${REPO/#&/g' -e 's/include_directories(\${APPSTREAM/#&/g'
+%global optflags %{optflags} -I%{_prefix}/%{_target_platform}/include/glib-2.0 -I%{_prefix}/%{_target_platform}/include/gio-unix-2.0 -I%{_prefix}/%{_target_platform}/%{_lib}/glib-2.0/include -I%{_prefix}/%{_target_platform}/include/libxml2 -I%{_prefix}/%{_target_platform}/include/json-c -I%{_prefix}/%{_target_platform}/include/appstream -Wno-error=vla-cxx-extension
 # Since we point at HOST python when crosscompiling, we don't need
 # an emulator to run $PYTHON in. But the python cmake modules barf
 # if CMAKE_CROSSCOMPILING_EMULATOR isn't set, so let's point it at

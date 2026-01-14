@@ -260,12 +260,24 @@ Ruby language bindings to the DNF package manager.
 %prep
 %autosetup -p1 -n %{?snapshot:dnf-main}%{!?snapshot:%{name}5-%{version}}
 %if %{cross_compiling}
+TOP="$(pwd)"
 # FIXME this should be fixed properly, but for now, this
 # is the fastest way to limit the damage of an added
 # -I/usr/include
 find . -name CMakeLists.txt |xargs \
 	sed -i -e 's/include_directories(\${LIBXML2/#&/g' -e 's/include_directories(\${GLIB/#&/g' -e 's/include_directories(\${JSONC/#&/g' -e 's/include_directories(\${REPO/#&/g' -e 's/target_include_directories(/#&/g'
 %global optflags %{optflags} -I%{_prefix}/%{_target_platform}/include/glib-2.0 -I%{_prefix}/%{_target_platform}/include/gio-unix-2.0 -I%{_prefix}/%{_target_platform}/%{_lib}/glib-2.0/include -I%{_prefix}/%{_target_platform}/include/libxml2 -I%{_prefix}/%{_target_platform}/include/json-c -Wno-error=vla-cxx-extension
+# Since we point at HOST python when crosscompiling, we don't need
+# an emulator to run $PYTHON in. But the python cmake modules barf
+# if CMAKE_CROSSCOMPILING_EMULATOR isn't set, so let's point it at
+# a script that does nothing.
+cat >fakeemu <<'EOF'
+#!/bin/bash
+APP="$1"
+shift
+exec "$APP" "$@"
+EOF
+chmod +x fakeemu
 %endif
 
 %cmake \
@@ -280,6 +292,9 @@ find . -name CMakeLists.txt |xargs \
 	-DWITH_RUBY:BOOL=OFF \
 %endif
 	-DPython3_EXECUTABLE=%{_bindir}/python \
+%if %{cross_compiling}
+	-DCMAKE_CROSSCOMPILING_EMULATOR="${TOP}/fakeemu" \
+%endif
 	-DPERL_EXECUTABLE=%{_bindir}/perl \
 	-DPKG_CONFIG_EXECUTABLE=%{_bindir}/pkg-config
 

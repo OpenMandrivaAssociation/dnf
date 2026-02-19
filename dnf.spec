@@ -48,6 +48,7 @@ BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
 BuildRequires: pkgconfig(libcurl)
+BuildRequires: pkgconfig(libacl)
 BuildRequires: pkgconfig(libpkgmanifest)
 BuildRequires: cmake(bash-completion)
 BuildRequires: gettext

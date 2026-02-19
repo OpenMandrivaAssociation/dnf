@@ -1,0 +1,12 @@
+diff -up dnf5-5.4.0.0/libdnf5/solv/vendor_change_manager.cpp.omv~ dnf5-5.4.0.0/libdnf5/solv/vendor_change_manager.cpp
+--- dnf5-5.4.0.0/libdnf5/solv/vendor_change_manager.cpp.omv~	2026-02-19 16:19:06.915974757 +0100
++++ dnf5-5.4.0.0/libdnf5/solv/vendor_change_manager.cpp	2026-02-19 16:20:58.650320157 +0100
+@@ -550,7 +550,7 @@ void VendorChangeManager::load_vendor_ch
+         auto config = toml::parse(path);
+ 
+         // Check config file version
+-        const auto version = toml::find<std::optional<std::string>>(config, "version");
++        const std::optional<std::string> version = toml::find<std::string>(config, "version");
+         if (!version) {
+             throw VendorChangePolicyConfigFileError(M_("Missing \"version\" key in file \"{}\""), path.native());
+         }

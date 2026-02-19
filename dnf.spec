@@ -14,8 +14,8 @@
 
 Summary: Command-line package manager
 Name: dnf
-Version: 5.3.0.0
-Release: %{?snapshot:0.%{snapshot}.}4
+Version: 5.4.0.0
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -124,7 +124,7 @@ dnf5-ref.patch
 # and "dnf erase" (used to mean "dnf rm")
 dnf5-erase.patch
 dnf5-workaround-rpmtsRun-exit-code.patch
-dnf-5.3-compile.patch
+dnf-5.4.0.0-compile.patch
 
 %description
 DNF5 is a command-line package manager that automates the process of installing,
@@ -376,6 +376,8 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man5/dnf5.conf-todo.5*
 %doc %{_mandir}/man5/dnf5.conf-deprecated.5*
 %doc %{_mandir}/man5/dnf5.conf-vendorpolicy.5*
+%doc %{_mandir}/man5/dnf5.conf-vendorpolicy-v1_0.5*
+%doc %{_mandir}/man5/dnf5.conf-vendorpolicy-v1_1.5*
 %doc %{_mandir}/man8/libdnf5-actions.8*
 %doc %{_mandir}/man7/dnf5*.7*
 %doc %{_mandir}/man8/dnf5.8*

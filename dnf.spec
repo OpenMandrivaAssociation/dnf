@@ -6,7 +6,7 @@
 %define libname %mklibname dnf5
 %define clilibname %mklibname dnf5-cli
 %define devname %mklibname -d dnf5
-%global optflags %{optflags} -Wno-error=vla-cxx-extension -Wno-error=unused-but-set-variable -Wno-error=cast-align
+%global optflags %{optflags} -Wno-error=vla-cxx-extension -Wno-error=unused-but-set-variable -Wno-error=cast-align -Wno-error=pass-failed
 
 # (bero) dnf5 is now ready to replace dnf
 %bcond_without dnf5_default
@@ -14,8 +14,8 @@
 
 Summary: Command-line package manager
 Name: dnf
-Version: 5.4.0.0
-Release: %{?snapshot:0.%{snapshot}.}2
+Version: 5.4.2.1
+Release: %{?snapshot:0.%{snapshot}.}1
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -363,6 +363,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{_bindir}/yum
 %endif
 %{_datadir}/bash-completion/completions/dnf5
+%{_datadir}/zsh/site-functions/_dnf5
 %{_libdir}/dnf5
 %dir %{_datadir}/dnf5/libdnf.conf.d
 %dir %{_sysconfdir}/dnf/libdnf5.conf.d
@@ -388,6 +389,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %doc %{_mandir}/man8/dnf5-check.8*
 %doc %{_mandir}/man8/dnf5-clean.8*
 %doc %{_mandir}/man8/dnf5-copr.8*
+%doc %{_mandir}/man8/dnf5-debuginfo-install.8*
 %doc %{_mandir}/man8/dnf5-do.8*
 %doc %{_mandir}/man8/dnf5-distro-sync.8*
 %doc %{_mandir}/man8/dnf5-downgrade.8*

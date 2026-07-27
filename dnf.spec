@@ -15,7 +15,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.4.2.1
-Release: %{?snapshot:0.%{snapshot}.}3
+Release: %{?snapshot:0.%{snapshot}.}4
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -48,6 +48,7 @@ BuildRequires: pkgconfig(smartcols)
 BuildRequires: pkgconfig(sdbus-c++)
 BuildRequires: pkgconfig(cppunit)
 BuildRequires: pkgconfig(libcurl)
+BuildRequires: pkgconfig(ldap)
 BuildRequires: pkgconfig(libacl)
 BuildRequires: pkgconfig(libpkgmanifest)
 BuildRequires: bash-completion-devel

@@ -15,7 +15,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.4.2.1
-Release: %{?snapshot:0.%{snapshot}.}4
+Release: %{?snapshot:0.%{snapshot}.}5
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -297,8 +297,13 @@ chmod +x fakeemu
 	-DPython3_EXECUTABLE=%{_bindir}/python \
 %if %{cross_compiling}
 	-DCMAKE_CROSSCOMPILING_EMULATOR="${TOP}/fakeemu" \
-%endif
+	-DPERL_EXECUTABLE=%{_prefix}/%{_target_platform}/usr/bin/perl \
+	-DPERL_INCLUDE_PATH=%{_prefix}/%{_target_platform}/%{_lib}/perl5/CORE \
+	-DPERL_LIBRARY=%{_prefix}/%{_target_platform}/%{_lib}/libperl.so \
+	-DWITH_TESTS:BOOL=OFF \
+%else
 	-DPERL_EXECUTABLE=%{_bindir}/perl \
+%endif
 	-DPKG_CONFIG_EXECUTABLE=%{_bindir}/pkg-config
 
 %build

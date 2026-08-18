@@ -6,7 +6,7 @@
 %define libname %mklibname dnf5
 %define clilibname %mklibname dnf5-cli
 %define devname %mklibname -d dnf5
-%global optflags %{optflags} -Wno-error=vla-cxx-extension -Wno-error=unused-but-set-variable -Wno-error=cast-align -Wno-error=pass-failed
+%global optflags %{optflags} -Wno-error=vla-cxx-extension -Wno-error=unused-but-set-variable -Wno-error=cast-align -Wno-error=pass-failed -Wno-error=unused-function
 
 # (bero) dnf5 is now ready to replace dnf
 %bcond_without dnf5_default
@@ -300,6 +300,8 @@ chmod +x fakeemu
 	-DPERL_EXECUTABLE=%{_prefix}/%{_target_platform}/usr/bin/perl \
 	-DPERL_INCLUDE_PATH=%{_prefix}/%{_target_platform}/%{_lib}/perl5/CORE \
 	-DPERL_LIBRARY=%{_prefix}/%{_target_platform}/%{_lib}/libperl.so \
+	-DGETTEXT_MSGMERGE_EXECUTABLE=%{_bindir}/msgmerge \
+	-DGETTEXT_MSGFMT_EXECUTABLE=%{_bindir}/msgfmt \
 	-DWITH_TESTS:BOOL=OFF \
 %else
 	-DPERL_EXECUTABLE=%{_bindir}/perl \

@@ -318,6 +318,11 @@ chmod +x fakeemu
 
 %install
 %ninja_install -C build
+%if %{cross_compiling}
+# PKG_CONFIG_SYSROOT_DIR can place systemd units under the sysroot prefix
+mkdir -p %{buildroot}%{_prefix}/lib/systemd/system
+find %{buildroot} -name 'dnf5-offline-transaction*' -path '*/systemd/system/*' ! -path '%{buildroot}%{_prefix}/lib/systemd/*' -exec mv {} %{buildroot}%{_prefix}/lib/systemd/system/ \;
+%endif
 
 # We don't need the README -- we know it's a plugin drop dir
 rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README

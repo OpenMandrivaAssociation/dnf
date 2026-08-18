@@ -15,7 +15,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.4.2.1
-Release: %{?snapshot:0.%{snapshot}.}5
+Release: %{?snapshot:0.%{snapshot}.}6
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -262,6 +262,10 @@ Ruby language bindings to the DNF package manager.
 
 %prep
 %autosetup -p1 -n %{?snapshot:dnf-main}%{!?snapshot:%{name}5-%{version}}
+# clang does not put strcmp in namespace std without <cstring>
+find . \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) -print0 | xargs -0 grep -l 'std::strcmp' | while read -r f; do
+	grep -q '#include <cstring>' "$f" || sed -i '1i#include <cstring>' "$f"
+done
 %if %{cross_compiling}
 TOP="$(pwd)"
 # FIXME this should be fixed properly, but for now, this

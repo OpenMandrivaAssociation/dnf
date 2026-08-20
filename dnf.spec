@@ -15,7 +15,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.4.2.1
-Release: %{?snapshot:0.%{snapshot}.}6
+Release: %{?snapshot:0.%{snapshot}.}7
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -59,7 +59,9 @@ BuildRequires: stdc++-static-devel
 # /usr/bin/clang-scan-deps
 BuildRequires: clang-tools
 # Language bindings
+%if !%{cross_compiling}
 BuildRequires: perl-devel
+%endif
 BuildRequires: pkgconfig(python3)
 %if %{with ruby}
 BuildRequires: ruby-devel
@@ -244,6 +246,7 @@ Group: Development/Python
 %description -n python-%{name}
 Python language bindings to the DNF package manager.
 
+%if !%{cross_compiling}
 %package -n perl-%{name}
 Summary: Perl language bindings to the DNF package manager
 Group: Development/Perl
@@ -251,6 +254,7 @@ Group: Development/Perl
 
 %description -n perl-%{name}
 Perl language bindings to the DNF package manager.
+%endif
 
 %package -n ruby-%{name}
 Summary: Ruby language bindings to the DNF package manager
@@ -300,6 +304,7 @@ chmod +x fakeemu
 %endif
 	-DPython3_EXECUTABLE=%{_bindir}/python \
 %if %{cross_compiling}
+	-DWITH_PERL5:BOOL=OFF \
 	-DCMAKE_CROSSCOMPILING_EMULATOR="${TOP}/fakeemu" \
 	-DPERL_EXECUTABLE=%{_prefix}/%{_target_platform}/usr/bin/perl \
 	-DPERL_INCLUDE_PATH=%{_prefix}/%{_target_platform}/%{_lib}/perl5/CORE \
@@ -514,11 +519,13 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %{python_sitearch}/libdnf5_cli
 %{python_sitearch}/libdnf5_cli-*.dist-info
 
+%if !%{cross_compiling}
 %files -n perl-%{name}
 %{_libdir}/perl5/vendor_perl/auto/libdnf5
 %{_libdir}/perl5/vendor_perl/auto/libdnf5_cli
 %{_libdir}/perl5/vendor_perl/libdnf5
 %{_libdir}/perl5/vendor_perl/libdnf5_cli
+%endif
 
 %if %{with ruby}
 %files -n ruby-%{name}

@@ -1,7 +1,7 @@
-diff -up dnf5-5.2.6.2/libdnf5/conf/vars.cpp.1~ dnf5-5.2.6.2/libdnf5/conf/vars.cpp
-diff -up dnf5-5.2.6.2/libdnf5/rpm/arch_private.hpp.1~ dnf5-5.2.6.2/libdnf5/rpm/arch_private.hpp
---- dnf5-5.2.6.2/libdnf5/rpm/arch_private.hpp.1~	2024-09-20 19:41:22.000000000 +0200
-+++ dnf5-5.2.6.2/libdnf5/rpm/arch_private.hpp	2024-10-07 21:35:12.433992118 +0200
+diff --git a/libdnf5/rpm/arch_private.hpp b/libdnf5/rpm/arch_private.hpp
+index 2e3e769..4fe457e 100644
+--- a/libdnf5/rpm/arch_private.hpp
++++ b/libdnf5/rpm/arch_private.hpp
 @@ -45,7 +45,7 @@ static const struct {
        nullptr}},
      {"arm", {"armv5tejl", "armv5tel", "armv5tl", "armv6l", "armv7l", "armv8l", nullptr}},
@@ -16,49 +16,52 @@ diff -up dnf5-5.2.6.2/libdnf5/rpm/arch_private.hpp.1~ dnf5-5.2.6.2/libdnf5/rpm/a
      {"sh4", {"sh4", "sh4a", nullptr}},
      {"sparc", {"sparc", "sparc64", "sparc64v", "sparcv8", "sparcv9", "sparcv9v", nullptr}},
 -    {"x86_64", {"x86_64", "amd64", "ia32e", nullptr}},
-+    {"x86_64", {"x86_64", "amd64", "ia32e", "znver1", nullptr}},
++    {"x86_64", {"x86_64", "amd64", "ia32e", "x86_64_v2", "x86_64_v3", "x86_64_v4", "znver1", nullptr}},
      {"loongarch64", {"loongarch64", nullptr}},
+     {"e2k", {"e2k", "e2kv4", "e2kv5", "e2v6"}},
      {nullptr, {nullptr}}};
+diff --git a/libdnf5/utils/system.cpp b/libdnf5/utils/system.cpp
+index ecdc57e..5357d58 100644
+--- a/libdnf5/utils/system.cpp
++++ b/libdnf5/utils/system.cpp
+@@ -25,6 +25,12 @@
+ #include <sys/auxv.h>
+ #include <sys/utsname.h>
  
-diff -up dnf5-5.2.6.2/libdnf5/utils/system.cpp.1~ dnf5-5.2.6.2/libdnf5/utils/system.cpp
---- dnf5-5.2.6.2/libdnf5/utils/system.cpp.1~	2024-10-07 21:36:29.134783012 +0200
-+++ dnf5-5.2.6.2/libdnf5/utils/system.cpp	2024-10-07 21:37:35.075461010 +0200
-@@ -45,6 +45,42 @@ void init_lib_rpm(const char * arch) {
++#include <cstring>
++
++#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
++#include <cpuid.h>
++#endif
++
+ namespace libdnf5::utils {
+ 
+ void init_lib_rpm(const char * arch) {
+@@ -45,6 +51,31 @@ void init_lib_rpm(const char * arch) {
  #define HWCAP_ARM_NEON (1 << 12)
  #endif
  
 +#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
-+static inline void cpuid(uint32_t op, uint32_t op2, uint32_t *eax, uint32_t *ebx, uint32_t *ecx, uint32_t *edx)
-+{
-+    asm volatile (
-+        "cpuid\n"  
-+    : "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx)
-+    : "a" (op), "c" (op2));
-+}
-+
-+static int is_ryzen() {
-+    uint32_t eax, ebx, ecx, edx;
++static bool is_ryzen() {
++    unsigned int eax = 0, ebx = 0, ecx = 0, edx = 0;
++    if (!__get_cpuid(0, &eax, &ebx, &ecx, &edx)) {
++        return false;
++    }
 +    char vendor[13];
-+    int family;
-+    vendor[12]=0;
-+#ifdef __i386__
-+    cpuid(0, &eax, &ebx, &ecx, &edx);
-+#else
-+    cpuid(0, 0, &eax, &ebx, &ecx, &edx);
-+#endif
-+    memcpy(vendor, &ebx, sizeof(ebx));
-+    memcpy(vendor+4, &edx, sizeof(edx));
-+    memcpy(vendor+8, &ecx, sizeof(ecx));
-+    if (strncmp(vendor, "AuthenticAMD", 12))
-+        return 0;
-+#ifdef __i386__
-+    cpuid(1, &eax, &ebx, &ecx, &edx);
-+#else
-+    cpuid(1, 0, &eax, &ebx, &ecx, &edx);
-+#endif
-+    family = (eax>>8)&0xf;
-+    if(family == 0xf)
-+        family += (eax>>20)&0x7f;
++    std::memcpy(vendor, &ebx, sizeof(ebx));
++    std::memcpy(vendor + 4, &edx, sizeof(edx));
++    std::memcpy(vendor + 8, &ecx, sizeof(ecx));
++    vendor[12] = '\0';
++    if (std::strncmp(vendor, "AuthenticAMD", 12) != 0) {
++        return false;
++    }
++    if (!__get_cpuid(1, &eax, &ebx, &ecx, &edx)) {
++        return false;
++    }
++    unsigned int family = (eax >> 8) & 0xf;
++    if (family == 0xf) {
++        family += (eax >> 20) & 0xff;
++    }
 +    return family >= 0x17;
 +}
 +#endif
@@ -66,18 +69,15 @@ diff -up dnf5-5.2.6.2/libdnf5/utils/system.cpp.1~ dnf5-5.2.6.2/libdnf5/utils/sys
  std::string detect_arch() {
      struct utsname un;
  
-@@ -69,6 +105,14 @@ std::string detect_arch() {
+@@ -69,6 +100,11 @@ std::string detect_arch() {
          *modifier++ = endian;
          *modifier = 0;
      }
-+
 +#if defined(__linux__) && (defined(__i386__) || defined(__x86_64__))
-+    if (!strcmp(un.machine, "x86_64") && is_ryzen()) {
-+        /* FIXME we also want to support x86_64_v* here... */
++    if (!std::strcmp(un.machine, "x86_64") && is_ryzen()) {
 +        return "znver1";
 +    }
 +#endif
-+
  #ifdef __MIPSEL__
      // support for little endian MIPS
      if (!strcmp(un.machine, "mips"))

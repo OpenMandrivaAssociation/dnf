@@ -15,7 +15,7 @@
 Summary: Command-line package manager
 Name: dnf
 Version: 5.4.2.1
-Release: %{?snapshot:0.%{snapshot}.}9
+Release: %{?snapshot:0.%{snapshot}.}10
 URL: https://github.com/rpm-software-management/dnf5
 License: GPL
 Group: System/Configuration/Packaging
@@ -330,6 +330,7 @@ rm %{buildroot}%{_prefix}/lib/python*/site-packages/libdnf_plugins/README
 %if %{with dnf5_default}
 ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/dnf
 ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/yum
+ln -s dnf5 %{buildroot}%{_datadir}/bash-completion/completions/dnf
 %endif
 
 ln -sr %{buildroot}%{_bindir}/dnf5 %{buildroot}%{_bindir}/microdnf
@@ -378,6 +379,7 @@ rm %{buildroot}%{_sysconfdir}/dnf/dnf.conf
 %if %{with dnf5_default}
 %{_bindir}/dnf
 %{_bindir}/yum
+%{_datadir}/bash-completion/completions/dnf
 %endif
 %{_datadir}/bash-completion/completions/dnf5
 %{_datadir}/zsh/site-functions/_dnf5

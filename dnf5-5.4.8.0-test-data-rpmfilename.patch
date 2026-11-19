@@ -1,0 +1,10 @@
+--- dnf5-5.4.8.0/test/data/build-rpms-and-repos.sh	2026-11-19 13:52:33.119879767 +0500
++++ dnf5-5.4.8.0/test/data/build-rpms-and-repos.sh	2026-11-19 13:52:33.119911626 +0500
+@@ -36,6 +36,7 @@ build_rpms() {
+         --define="_srcrpmdir ${TARGET_DIR}" \
+         --define="_rpmdir ${TARGET_DIR}" \
+         --define="_build_name_fmt %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm" \
++        --define="_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm" \
+         --define="_source_payload w1.gzdio" \
+         --define="_binary_payload w1.gzdio" \
+         "${SPEC}"

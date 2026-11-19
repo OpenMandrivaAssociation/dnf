@@ -140,7 +140,8 @@ dnf5-distro-release.patch
 dnf5-ref.patch
 # and "dnf erase" (used to mean "dnf rm")
 dnf5-erase.patch
-dnf5-workaround-rpmtsRun-exit-code.patch
+# Ensure test fixture binary RPMs do not inherit host/ABF %%_rpmfilename overrides
+dnf5-5.4.8.0-test-data-rpmfilename.patch
 # Upstream post-5.4.8.0 fixes (CVE-2026-123177, RPM log propagation, RPM header hygiene)
 dnf5-5.4.8.0-CVE-2026-123177-1.patch
 dnf5-5.4.8.0-CVE-2026-123177-2.patch

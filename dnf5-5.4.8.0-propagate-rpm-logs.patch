@@ -1,0 +1,43 @@
+commit 7ae8400dcb6eda5036dc41f1c104820fb263fa27
+Author: Aleš Matěj <amatej@redhat.com>
+Date:   Wed Nov 11 12:31:04 2026 +0100
+
+    Propagate rpm log messages not associated to callbacks when rpm ts fails
+    
+    Technically this can also show INFO and or DEBUG messages but when the
+    transaction (or test transaction) fails in rpm I believe it is better to
+    have as much information as possible.
+    Otherwise the output says just `Transaction failed: Rpm transaction
+    failed.` which is not helpful.
+    
+    For https://github.com/rpm-software-management/dnf5/issues/2028
+    The failure due to missing `CAP_SYS_CHROOT` happens already in the test
+    transaction but I think we should propagate the left over transaction
+    logs also for the non-test transaction.
+    
+    Fix and enable test scenario for this behavior.
+
+diff --git a/libdnf5/base/transaction.cpp b/libdnf5/base/transaction.cpp
+index b66fc6b..df27523 100644
+--- a/libdnf5/base/transaction.cpp
++++ b/libdnf5/base/transaction.cpp
+@@ -1206,6 +1206,9 @@ Transaction::TransactionRunResult Transaction::Impl::_run(
+         for (auto it : rpm_transaction.get_problems()) {
+             transaction_problems.emplace_back(it.to_string());
+         }
++        for (auto it : rpm_transaction.extract_rpm_messages()) {
++            transaction_problems.emplace_back(it);
++        }
+         return TransactionRunResult::ERROR_RPM_RUN;
+     }
+ 
+@@ -1574,6 +1577,9 @@ Transaction::TransactionRunResult Transaction::Impl::_run(
+         for (auto it : rpm_transaction.get_problems()) {
+             transaction_problems.emplace_back(it.to_string());
+         }
++        for (auto it : rpm_transaction.extract_rpm_messages()) {
++            transaction_problems.emplace_back(it);
++        }
+         return TransactionRunResult::ERROR_RPM_RUN;
+     }
+ }

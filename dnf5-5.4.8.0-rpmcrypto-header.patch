@@ -1,0 +1,21 @@
+commit 18cea7fff810b64ffde68d8526a0289ef385b646
+Author: Keith Bowes <keithbowes@users.noreply.github.com>
+Date:   Tue Nov 17 01:06:59 2026 -0500
+
+    Fix build in Mageia 10
+    
+    This is probably due to a difference between RPM 4 and RPM 6, with RPM 4
+    not indirectly including a header that RPM 6 does.
+
+diff --git a/libdnf5/system/state.cpp b/libdnf5/system/state.cpp
+index 699850f..3403cc3 100644
+--- a/libdnf5/system/state.cpp
++++ b/libdnf5/system/state.cpp
+@@ -31,6 +31,7 @@
+ 
+ #include <fcntl.h>
+ #include <libdnf5/comps/group/package.hpp>
++#include <rpm/rpmcrypto.h>
+ #include <rpm/rpmdb.h>
+ #include <rpm/rpmtag.h>
+ #include <rpm/rpmts.h>
